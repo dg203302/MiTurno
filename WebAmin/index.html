@@ -1,14 +1,2424 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quercia Studio Barber — Panel de Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #0a0806;
+    --panel: rgba(26, 20, 16, 0.45);
+    --panel-solid: #17120e;
+    --leather: #1e150f;
+    --leather-light: #2c1f15;
+    --parchment: #f2e7d5;
+    --parchment-dim: #bdae95;
+    --brass: #c5a059;
+    --brass-bright: #e5c17d;
+    --brass-dark: #8c6a32;
+    --burgundy: #5a141a;
+    --burgundy-bright: #9e2a2b;
+    --emerald: #1b4d3e;
+    --emerald-bright: #2d8a6b;
+    --line: rgba(242, 231, 213, 0.09);
+    --shadow: 0 30px 60px rgba(0, 0, 0, 0.65);
+    
+    /* Glassmorphism system */
+    --glass-bg: rgba(24, 18, 14, 0.6);
+    --glass-bg-hover: rgba(36, 28, 22, 0.75);
+    --glass-border: rgba(229, 193, 125, 0.12);
+    --glass-border-active: rgba(229, 193, 125, 0.35);
+    --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.55);
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--void);
+    color: var(--parchment);
+    font-family: 'Spectral', serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(26, 20, 16, 0.8) 0%, transparent 60%),
+      radial-gradient(circle at 90% 80%, rgba(90, 20, 26, 0.05) 0%, transparent 50%);
+    min-height: 100vh;
+  }
+  ::selection { background: var(--brass); color: var(--void); }
+
+  h1, h2, h3, h4, .display {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .mono {
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  /* Layout */
+  .admin-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Sidebar Navigation */
+  .sidebar {
+    width: 260px;
+    background: rgba(16, 12, 9, 0.95);
+    border-right: 1px solid var(--line);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 100;
+  }
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 48px;
+    padding-bottom: 20px;
+    border-bottom: 1.5px dashed var(--line);
+  }
+  .sidebar-brand .logo-pole {
+    width: 6px;
+    height: 32px;
+    border-radius: 4px;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--burgundy) 0 8px,
+      var(--parchment) 8px 16px,
+      var(--brass) 16px 24px
+    );
+    background-size: 100% 200%;
+    animation: pole-scroll 4s linear infinite;
+  }
+  @keyframes pole-scroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 40px; }
+  }
+  .brand-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .brand-title span {
+    color: var(--brass-bright);
+    font-weight: 400;
+    font-style: italic;
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+  }
+
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--parchment-dim);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+  }
+  .nav-item svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+  }
+  .nav-item:hover, .nav-item.active {
+    color: var(--brass-bright);
+    background: rgba(197, 160, 89, 0.06);
+    border-color: rgba(197, 160, 89, 0.15);
+  }
+  .nav-item.active {
+    border-color: var(--brass);
+    box-shadow: 0 0 15px rgba(197, 160, 89, 0.05);
+  }
+  .nav-item:hover svg {
+    transform: translateX(3px);
+  }
+
+  .sidebar-footer {
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  .btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid rgba(90, 20, 26, 0.3);
+    color: #e63946;
+    border-radius: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+  .btn-logout:hover {
+    background: rgba(90, 20, 26, 0.15);
+    border-color: #e63946;
+    box-shadow: 0 0 12px rgba(230, 57, 70, 0.15);
+  }
+
+  /* Main Panel Content */
+  .main-content {
+    flex-grow: 1;
+    padding: 44px 50px;
+    overflow-y: auto;
+  }
+
+  /* Header */
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  .panel-title h1 {
+    font-size: 2.2rem;
+    color: var(--parchment);
+  }
+  .panel-title p {
+    color: var(--parchment-dim);
+    font-size: 0.95rem;
+    margin-top: 4px;
+  }
+  .header-actions {
+    display: flex;
+    gap: 16px;
+  }
+  .btn-primary {
+    background: var(--brass);
+    color: var(--void);
+    border: 1px solid var(--brass-bright);
+    padding: 12px 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:hover {
+    background: var(--brass-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(197, 160, 89, 0.2);
+  }
+  .btn-ghost {
+    background: rgba(242, 231, 213, 0.03);
+    border: 1px solid var(--parchment-dim);
+    color: var(--parchment);
+    padding: 12px 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+  .btn-ghost:hover {
+    border-color: var(--brass-bright);
+    color: var(--brass-bright);
+    background: rgba(197, 160, 89, 0.05);
+  }
+
+  /* Glassmorphic Panel Cards */
+  .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(120%);
+    -webkit-backdrop-filter: blur(16px) saturate(120%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-glow);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 30px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .glass-panel:hover {
+    border-color: var(--glass-border-active);
+  }
+
+  /* Tab View containers */
+  .tab-view {
+    display: none;
+    animation: fadeIn 0.4s ease forwards;
+  }
+  .tab-view.active {
+    display: block;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Dashboard Metrics Grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-bottom: 36px;
+  }
+  .metric-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .metric-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--parchment-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .metric-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--brass-bright);
+    line-height: 1.1;
+    font-family: 'Fraunces', serif;
+  }
+  .metric-sub {
+    font-size: 0.8rem;
+    color: var(--parchment-dim);
+  }
+  .metric-sub span {
+    color: var(--brass);
+    font-weight: bold;
+  }
+
+  /* Dashboard Panels Split */
+  .dashboard-split {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 30px;
+  }
+
+  /* Appointments list/table styling */
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1.5px dashed var(--line);
+    padding-bottom: 14px;
+  }
+  .table-header h3 {
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--parchment);
+  }
+
+  .turnos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .turno-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1.2fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(26, 20, 16, 0.3);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  .turno-row:hover {
+    border-color: rgba(229, 193, 125, 0.2);
+    background: rgba(36, 28, 22, 0.45);
+  }
+  .turno-client {
+    font-weight: 600;
+    color: var(--parchment);
+  }
+  .turno-client span {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--parchment-dim);
+    margin-top: 2px;
+  }
+  .turno-service {
+    font-size: 0.95rem;
+    color: var(--parchment);
+  }
+  .turno-service span {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--brass-bright);
+    font-family: 'Space Mono', monospace;
+  }
+  .turno-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--parchment-dim);
+  }
+  .turno-date strong {
+    color: var(--parchment);
+    display: block;
+  }
+  .turno-barber {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+  }
+  .turno-barber-initials {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--leather-light);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--brass-bright);
+  }
+  
+  /* Status Badges */
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    text-align: center;
+    width: fit-content;
+  }
+  .badge-pending {
+    background: rgba(197, 160, 89, 0.08);
+    border: 1px solid var(--brass);
+    color: var(--brass-bright);
+  }
+  .badge-completed {
+    background: rgba(45, 138, 107, 0.08);
+    border: 1px solid var(--emerald-bright);
+    color: #4ade80;
+  }
+  .badge-cancelled {
+    background: rgba(158, 42, 43, 0.08);
+    border: 1px solid #e63946;
+    color: #f87171;
+  }
+
+  /* Row Action buttons */
+  .row-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid var(--glass-border);
+    background: rgba(10, 8, 6, 0.5);
+    color: var(--parchment-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  .btn-icon svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+  .btn-icon:hover {
+    border-color: var(--brass-bright);
+    color: var(--brass-bright);
+    background: rgba(197, 160, 89, 0.08);
+  }
+  .btn-icon.btn-complete-action:hover {
+    border-color: var(--emerald-bright);
+    color: #4ade80;
+    background: rgba(45, 138, 107, 0.1);
+  }
+  .btn-icon.btn-cancel-action:hover {
+    border-color: #e63946;
+    color: #f87171;
+    background: rgba(90, 20, 26, 0.2);
+  }
+
+  /* Booking form filters row */
+  .filters-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto;
+    gap: 16px;
+    margin-bottom: 24px;
+    align-items: flex-end;
+  }
+  .filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .filter-field label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: var(--parchment-dim);
+  }
+  select, input[type=text], input[type=tel], input[type=number], input[type=date], textarea {
+    width: 100%; 
+    background: rgba(10, 8, 6, 0.6); 
+    border: 1px solid var(--glass-border); 
+    color: var(--parchment);
+    padding: 12px 14px; 
+    border-radius: 6px; 
+    font-family: 'Spectral', serif; 
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+  select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--brass-bright);
+    background: rgba(10, 8, 6, 0.85);
+    box-shadow: 0 0 10px rgba(197, 160, 89, 0.15);
+  }
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e5c17d' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  /* Configuration sub-tabs */
+  .config-nav {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 8px;
+  }
+  .config-tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--parchment-dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+  .config-tab-btn.active, .config-tab-btn:hover {
+    color: var(--brass-bright);
+  }
+  .config-tab-btn.active {
+    border-color: var(--brass);
+  }
+  
+  .config-section {
+    display: none;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  .config-section.active {
+    display: block;
+  }
+
+  /* Configuration items lists */
+  .config-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .config-item-card {
+    background: rgba(26, 20, 16, 0.45);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 22px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+  }
+  .config-item-card:hover {
+    border-color: var(--glass-border-active);
+    background: rgba(36, 28, 22, 0.55);
+  }
+  .config-item-info h4 {
+    font-size: 1.15rem;
+    color: var(--parchment);
+    margin-bottom: 6px;
+  }
+  .config-item-info p {
+    font-size: 0.9rem;
+    color: var(--parchment-dim);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  .config-item-meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--brass-bright);
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+  }
+  .config-item-actions {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    gap: 6px;
+  }
+
+  /* Schedule hours table */
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .schedule-table th, .schedule-table td {
+    padding: 16px;
+    text-align: left;
+  }
+  .schedule-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--brass-bright);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--line);
+  }
+  .schedule-table tr {
+    border-bottom: 1px solid var(--line);
+  }
+  .schedule-table tr:last-child {
+    border-bottom: none;
+  }
+  .schedule-table td {
+    font-size: 1rem;
+  }
+  .schedule-table td:first-child {
+    font-weight: 600;
+  }
+  .schedule-time-inputs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 320px;
+  }
+  .schedule-time-inputs input[type=text] {
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* Review Admin Cards */
+  .reviews-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .review-admin-card {
+    background: rgba(26, 20, 16, 0.45);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 22px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+  }
+  .review-admin-card:hover {
+    border-color: var(--glass-border-active);
+  }
+  .review-admin-card .stars {
+    color: var(--brass-bright);
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+  .review-admin-text {
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--parchment);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .review-admin-meta {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--parchment-dim);
+    text-transform: uppercase;
+  }
+  .btn-review-delete {
+    position: absolute;
+    bottom: 18px;
+    right: 18px;
+    color: #e63946;
+    border: 1px solid rgba(230, 57, 70, 0.2);
+    background: transparent;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+  }
+  .btn-review-delete:hover {
+    background: rgba(230, 57, 70, 0.15);
+    border-color: #e63946;
+  }
+
+  /* Modals */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10, 8, 6, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .modal-overlay.open {
+    display: flex;
+    opacity: 1;
+  }
+  .modal-card {
+    background: var(--leather);
+    border: 1px solid var(--brass-bright);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 540px;
+    overflow: hidden;
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal-overlay.open .modal-card {
+    transform: translateY(0);
+  }
+  .modal-header {
+    background: rgba(10, 8, 6, 0.5);
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-header h3 {
+    font-size: 1.3rem;
+    color: var(--brass-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .btn-close-modal {
+    background: transparent;
+    border: none;
+    color: var(--parchment-dim);
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .btn-close-modal:hover {
+    color: var(--parchment);
+  }
+  .modal-body {
+    padding: 24px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .modal-footer {
+    background: rgba(10, 8, 6, 0.5);
+    padding: 16px 24px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  /* Form Helpers */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--parchment-dim);
+    margin-bottom: 8px;
+  }
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* Authentication Overlay */
+  .auth-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--void);
+    background-image: 
+      radial-gradient(circle at 50% 30%, rgba(197, 160, 89, 0.15) 0%, transparent 50%),
+      var(--void);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .auth-card {
+    background: rgba(28, 20, 15, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--brass-bright);
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    padding: 44px 38px;
+    text-align: center;
+  }
+  .auth-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .auth-logo .pole {
+    width: 10px;
+    height: 48px;
+    border-radius: 6px;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--burgundy) 0 10px,
+      var(--parchment) 10px 20px,
+      var(--brass) 20px 30px
+    );
+    background-size: 100% 200%;
+    animation: pole-scroll 4s linear infinite;
+    box-shadow: 0 0 15px rgba(197, 160, 89, 0.25);
+  }
+  .auth-card h2 {
+    font-size: 1.8rem;
+    color: var(--parchment);
+    margin-bottom: 6px;
+  }
+  .auth-card p {
+    font-size: 0.9rem;
+    color: var(--parchment-dim);
+    margin-bottom: 30px;
+  }
+
+  /* Toasts */
+  .toast {
+    position: fixed; bottom: 26px; right: 26px;
+    background: var(--leather); border: 1px solid var(--brass); color: var(--parchment);
+    padding: 16px 24px; border-radius: 8px; box-shadow: var(--shadow); max-width: 380px;
+    opacity: 0; transform: translateY(10px); pointer-events: none; 
+    transition: all .35s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1000; font-size: 0.92rem;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .toast-success { border-color: var(--emerald-bright); }
+  .toast-error { border-color: #e63946; }
+
+  /* Empty state */
+  .empty-state {
+    padding: 44px;
+    text-align: center;
+    color: var(--parchment-dim);
+    font-style: italic;
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+  }
+
+  /* Responsive styling */
+  @media (max-width: 960px) {
+    .dashboard-split {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .admin-layout {
+      flex-direction: column;
+    }
+    
+    /* Fixed bottom navigation bar for native-like mobile app feeling */
+    .sidebar {
+      width: 100%;
+      height: 72px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
+      padding: 0 10px;
+      background: rgba(10, 8, 6, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--glass-border-active);
+      border-right: none;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.7);
+      border-radius: 16px 16px 0 0;
+    }
+    .sidebar-brand {
+      display: none;
+    }
+    .nav-menu {
+      flex-direction: row;
+      justify-content: space-around;
+      width: 100%;
+      height: 100%;
+      gap: 0;
+      margin: 0;
+    }
+    .nav-item {
+      flex-direction: column;
+      gap: 4px;
+      padding: 8px 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      min-width: auto;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      text-align: center;
+      color: var(--parchment-dim);
+    }
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+    }
+    .nav-item:hover svg, .nav-item.active svg {
+      transform: scale(1.1);
+    }
+    .nav-item.active {
+      background: transparent;
+      color: var(--brass-bright);
+      box-shadow: none;
+      border-bottom: 2px solid var(--brass);
+    }
+    .sidebar-footer {
+      display: none;
+    }
+    .main-content {
+      padding: 20px 16px 92px; /* Pad bottom for bar! */
+    }
+    .panel-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .panel-header .header-actions {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .panel-header .header-actions a,
+    .panel-header .header-actions button {
+      flex: 1;
+      padding: 12px;
+      font-size: 0.75rem;
+      justify-content: center;
+    }
+    .metrics-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .glass-panel {
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+    .metric-value {
+      font-size: 1.7rem;
+    }
+    .filters-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .filters-row .filter-field button {
+      width: 100%;
+    }
+    
+    /* Responsive Touch-friendly Turnos Cards */
+    .turno-row {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 18px;
+      position: relative;
+      background: rgba(26, 20, 16, 0.45);
+    }
+    .turno-row > div {
+      width: 100%;
+    }
+    .turno-row .badge {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      margin: 0;
+    }
+    .turno-client {
+      padding-right: 90px;
+      font-size: 1.05rem;
+    }
+    .turno-service {
+      font-size: 0.95rem;
+      border-bottom: 1px dashed var(--line);
+      padding-bottom: 8px;
+    }
+    .turno-date {
+      font-size: 0.9rem;
+    }
+    .turno-barber {
+      font-size: 0.9rem;
+      background: rgba(242, 231, 213, 0.03);
+      padding: 6px 12px;
+      border-radius: 4px;
+      width: fit-content;
+    }
+    .turno-row .row-actions {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      gap: 10px;
+      margin-top: 6px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+    .turno-row .btn-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+    }
+    .turno-row .btn-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .btn-logout-mobile {
+      display: inline-flex !important;
+    }
+    
+    /* Modals mobile scroll optimization */
+    .modal-card {
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-body {
+      overflow-y: auto;
+      flex-grow: 1;
+      padding: 18px;
+    }
+  }
+</style>
 </head>
-
 <body>
-    <h1>Web App Admins</h1>
-</body>
 
+  <!-- Authentication Overlay -->
+  <div class="auth-overlay" id="authOverlay">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="pole"></div>
+      </div>
+      <h2>Quercia Staff</h2>
+      <p class="mono" style="font-size:0.75rem; letter-spacing:0.1em; color:var(--brass-bright);">INGRESO ADMINISTRATIVO</p>
+      
+      <div class="form-group" style="margin-bottom:24px;">
+        <input type="password" id="pinInput" placeholder="Código PIN de acceso" style="text-align:center; font-family:'Space Mono', monospace; font-size:1.2rem; letter-spacing:0.2em; padding:14px;" autofocus>
+      </div>
+      
+      <button type="button" class="btn-primary" style="width:100%; justify-content:center;" id="btnLoginSubmit">Acceder al panel</button>
+      <p style="font-size: 0.78rem; color:var(--parchment-dim); margin-top:20px; text-decoration: underline;"><a href="index.html">← Volver al sitio público</a></p>
+    </div>
+  </div>
+
+  <!-- Admin Panel Layout -->
+  <div class="admin-layout" id="adminDashboardLayout" style="display:none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-brand">
+          <div class="logo-pole"></div>
+          <div class="brand-title">Quercia <span>Studio Barber Panel</span></div>
+        </div>
+        <nav class="nav-menu">
+          <button type="button" class="nav-item active" data-tab="tab-dashboard">
+            <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            Resumen
+          </button>
+          <button type="button" class="nav-item" data-tab="tab-turnos">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+            Turnos
+          </button>
+          <button type="button" class="nav-item" data-tab="tab-config">
+            <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+            Config Web
+          </button>
+          <button type="button" class="nav-item" data-tab="tab-whatsapp">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+            WhatsApp
+          </button>
+          <button type="button" class="nav-item" data-tab="tab-reseñas">
+            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            Reseñas
+          </button>
+        </nav>
+      </div>
+      
+      <div class="sidebar-footer">
+        <button type="button" class="btn-logout" id="btnLogout">
+          <svg viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3zm4.72 2.28l-1.41 1.41C18.27 8.14 19 10 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2 .73-3.86 1.69-5.31L5.28 5.28C4.12 6.9 3.5 8.87 3.5 11c0 4.69 3.81 8.5 8.5 8.5s8.5-3.81 8.5-8.5c0-2.13-.62-4.1-1.78-5.72z"/></svg>
+          Cerrar Sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel Area -->
+    <main class="main-content">
+      
+      <!-- TAB 1: DASHBOARD RESUMEN -->
+      <div class="tab-view active" id="tab-dashboard">
+        <header class="panel-header">
+          <div class="panel-title" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <div>
+              <h1 id="dashWelcome">Hola, Staff</h1>
+              <p>Este es el resumen operativo de hoy en la barbería.</p>
+            </div>
+            <!-- Botón de salir mobile-only -->
+            <button type="button" class="btn-logout-mobile" id="btnLogoutMobile" style="display:none; background:transparent; border:1px solid rgba(230,57,70,0.3); color:#e63946; padding:8px 12px; border-radius:6px; font-family:'Space Mono', monospace; font-size:0.7rem; text-transform:uppercase; align-items:center; gap:6px;">
+              <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:currentColor;"><path d="M13 3h-2v10h2V3zm4.72 2.28l-1.41 1.41C18.27 8.14 19 10 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2 .73-3.86 1.69-5.31L5.28 5.28C4.12 6.9 3.5 8.87 3.5 11c0 4.69 3.81 8.5 8.5 8.5s8.5-3.81 8.5-8.5c0-2.13-.62-4.1-1.78-5.72z"/></svg>
+              <span>Salir</span>
+            </button>
+          </div>
+          <div class="header-actions">
+            <a href="index.html" target="_blank" class="btn-ghost">Ver sitio web público</a>
+            <button type="button" class="btn-primary" id="btnManualBookingDash">+ Nuevo Turno Manual</button>
+          </div>
+        </header>
+
+        <!-- Metrics Row -->
+        <div class="metrics-grid">
+          <div class="glass-panel metric-card">
+            <span class="metric-label">Turnos hoy</span>
+            <span class="metric-value" id="metricTurnosHoy">0</span>
+            <span class="metric-sub"><span id="metricTurnosPendientesHoy">0</span> pendientes</span>
+          </div>
+          <div class="glass-panel metric-card">
+            <span class="metric-label">Turnos esta semana</span>
+            <span class="metric-value" id="metricTurnosSemana">0</span>
+            <span class="metric-sub">Próximos 7 días</span>
+          </div>
+          <div class="glass-panel metric-card">
+            <span class="metric-label">Ingresos estimados</span>
+            <span class="metric-value" id="metricIngresosActivos">$0</span>
+            <span class="metric-sub">De turnos confirmados</span>
+          </div>
+          <div class="glass-panel metric-card">
+            <span class="metric-label">Reseñas online</span>
+            <span class="metric-value" id="metricReseñasTotal">0</span>
+            <span class="metric-sub">Promedio: <span id="metricReseñasAvg">0.0</span> ★</span>
+          </div>
+        </div>
+
+        <!-- Dashboard Split -->
+        <div class="dashboard-split">
+          <!-- Upcoming Appointments today -->
+          <div class="glass-panel" style="margin-bottom:0;">
+            <div class="table-header">
+              <h3>Próximos Turnos de Hoy</h3>
+              <a href="#" class="mono" style="font-size:0.75rem; color:var(--brass-bright);" onclick="switchTab('tab-turnos'); return false;">Ver todos los turnos →</a>
+            </div>
+            <div class="turnos-list" id="dashboardTurnosContainer">
+              <!-- Carga dinámica -->
+            </div>
+          </div>
+
+          <!-- Quick stats / Info -->
+          <div class="glass-panel" style="margin-bottom:0; display:flex; flex-direction:column; gap:20px;">
+            <h3 style="font-size:1.15rem; text-transform:uppercase; letter-spacing:0.02em; border-bottom:1px solid var(--line); padding-bottom:12px;">Estado del Equipo</h3>
+            <div id="dashboardBarberosStatus" style="display:flex; flex-direction:column; gap:16px;">
+              <!-- Carga dinámica -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: GESTIONAR TURNOS -->
+      <div class="tab-view" id="tab-turnos">
+        <header class="panel-header">
+          <div class="panel-title">
+            <h1>Gestión de Turnos</h1>
+            <p>Administrá las reservas de clientes, cancelá o completá turnos activos.</p>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="btn-primary" id="btnManualBookingTurnos">+ Turno Manual</button>
+          </div>
+        </header>
+
+        <!-- Filters Block -->
+        <div class="glass-panel">
+          <div class="filters-row">
+            <div class="filter-field">
+              <label for="filterDate">Filtrar por fecha</label>
+              <input type="date" id="filterDate">
+            </div>
+            <div class="filter-field">
+              <label for="filterBarber">Barbero</label>
+              <select id="filterBarber">
+                <option value="todos">Todos los barberos</option>
+                <!-- Opciones dinámicas -->
+              </select>
+            </div>
+            <div class="filter-field">
+              <label for="filterStatus">Estado</label>
+              <select id="filterStatus">
+                <option value="todos">Todos los estados</option>
+                <option value="Pendiente">Pendientes</option>
+                <option value="Completado">Completados</option>
+                <option value="Cancelado">Cancelados</option>
+              </select>
+            </div>
+            <div class="filter-field">
+              <button type="button" class="btn-ghost" id="btnClearFilters" style="padding:11px 20px;">Limpiar</button>
+            </div>
+          </div>
+
+          <!-- List/Table -->
+          <div class="table-header" style="margin-top:20px;">
+            <h3>Listado de Reservas</h3>
+            <span class="mono" style="font-size:0.75rem; color:var(--parchment-dim);" id="turnosFilteredCount">Mostrando 0 turnos</span>
+          </div>
+
+          <div class="turnos-list" id="turnosTableContainer">
+            <!-- Carga dinámica -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: CONFIGURACION WEB -->
+      <div class="tab-view" id="tab-config">
+        <header class="panel-header">
+          <div class="panel-title">
+            <h1>Configuración de la Web</h1>
+            <p>Modificá los servicios ofrecidos, el equipo de barberos y los horarios de atención al público.</p>
+          </div>
+        </header>
+
+        <div class="glass-panel">
+          <!-- Configuration Sub Tabs -->
+          <div class="config-nav">
+            <button type="button" class="config-tab-btn active" data-sec="sec-servicios">Servicios</button>
+            <button type="button" class="config-tab-btn" data-sec="sec-barberos">El Equipo</button>
+            <button type="button" class="config-tab-btn" data-sec="sec-horarios">Horarios</button>
+          </div>
+
+          <!-- Section: Servicios -->
+          <div class="config-section active" id="sec-servicios">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+              <h3 style="font-size:1.15rem; color:var(--brass-bright);">Listado de Servicios</h3>
+              <button type="button" class="btn-primary" style="padding: 8px 16px; font-size:0.75rem;" id="btnAddService">+ Nuevo Servicio</button>
+            </div>
+            <div class="config-items-grid" id="configServicesContainer">
+              <!-- Carga dinámica -->
+            </div>
+          </div>
+
+          <!-- Section: Barberos -->
+          <div class="config-section" id="sec-barberos">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+              <h3 style="font-size:1.15rem; color:var(--brass-bright);">El Equipo de Barberos</h3>
+              <button type="button" class="btn-primary" style="padding: 8px 16px; font-size:0.75rem;" id="btnAddBarber">+ Nuevo Barbero</button>
+            </div>
+            <div class="config-items-grid" id="configBarbersContainer">
+              <!-- Carga dinámica -->
+            </div>
+          </div>
+
+          <!-- Section: Horarios -->
+          <div class="config-section" id="sec-horarios">
+            <h3 style="font-size:1.15rem; color:var(--brass-bright); margin-bottom:20px;">Horario Semanal de Atención</h3>
+            <form id="scheduleForm">
+              <table class="schedule-table">
+                <thead>
+                  <tr>
+                    <th>Día</th>
+                    <th>Estado</th>
+                    <th>Rango Horario</th>
+                  </tr>
+                </thead>
+                <tbody id="scheduleTableBody">
+                  <!-- Generación dinámica -->
+                </tbody>
+              </table>
+              <div style="margin-top:30px; display:flex; justify-content:flex-end;">
+                <button type="submit" class="btn-primary">Guardar Horarios</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 4: MODERACION RESEÑAS -->
+      <div class="tab-view" id="tab-reseñas">
+        <header class="panel-header">
+          <div class="panel-title">
+            <h1>Moderación de Reseñas</h1>
+            <p>Supervisá los comentarios dejados por tus clientes y eliminá opiniones no deseadas o fraudulentas.</p>
+          </div>
+        </header>
+
+        <div class="glass-panel">
+          <div class="table-header">
+            <h3>Reseñas Publicadas</h3>
+            <span class="mono" style="font-size:0.75rem; color:var(--parchment-dim);" id="reseñasAdminCount">0 opiniones</span>
+          </div>
+          <div class="reviews-admin-grid" id="reviewsAdminContainer">
+            <!-- Carga dinámica -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: GESTIONAR AGENTE DE WHATSAPP -->
+      <div class="tab-view" id="tab-whatsapp">
+        <header class="panel-header">
+          <div class="panel-title">
+            <h1>Agente de WhatsApp</h1>
+            <p>Configurá el número al que se envían las reservas y personalizá los mensajes de confirmación.</p>
+          </div>
+        </header>
+
+        <div class="glass-panel" style="max-width: 600px; background: rgba(23, 18, 14, 0.65);">
+          <form id="whatsappConfigForm">
+            <h3 style="font-family:'Fraunces', serif; font-size:1.3rem; color:var(--brass-bright); margin-bottom:20px; border-bottom:1px dashed var(--line); padding-bottom:10px; text-transform:uppercase;">Configuración del Agente</h3>
+            
+            <div class="form-group">
+              <label for="waPhone">Número de WhatsApp del Negocio *</label>
+              <input type="text" id="waPhone" required placeholder="Ej: 542645611229">
+              <p style="font-size:0.78rem; color:var(--parchment-dim); margin-top:6px; line-height: 1.4;">Debe incluir el código de país y de área, sin el "+" ni el "0" ni espacios. Para San Juan, Argentina debe empezar con 54 (Ej: 542645611229).</p>
+            </div>
+
+            <div class="form-group">
+              <label for="waMessageTemplate">Plantilla de Mensaje de Reserva</label>
+              <textarea id="waMessageTemplate" rows="8" style="font-family: inherit; font-size:0.95rem; resize:vertical;" placeholder="¡Hola! Quiero reservar un turno..."></textarea>
+              <p style="font-size:0.78rem; color:var(--parchment-dim); margin-top:6px; line-height: 1.4;">Variables dinámicas disponibles: <strong style="color:var(--brass-bright);">{servicio}</strong>, <strong style="color:var(--brass-bright);">{barbero}</strong>, <strong style="color:var(--brass-bright);">{fecha}</strong>, <strong style="color:var(--brass-bright);">{hora}</strong>, <strong style="color:var(--brass-bright);">{nombre}</strong>, <strong style="color:var(--brass-bright);">{telefono}</strong>. Se reemplazarán automáticamente al agendar.</p>
+            </div>
+
+            <div style="margin-top:30px; display:flex; justify-content:flex-end;">
+              <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">Guardar Configuración</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- MODAL: MANUAL BOOKING (Registrar Turno Manual) -->
+  <div class="modal-overlay" id="manualBookingModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalBookingTitle">Nuevo Turno Manual</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModal('manualBookingModal')">&times;</button>
+      </div>
+      <form id="manualBookingForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="mbCliente">Nombre del Cliente *</label>
+            <input type="text" id="mbCliente" required placeholder="Ej: Juan Perez">
+          </div>
+          <div class="form-group">
+            <label for="mbWhatsapp">WhatsApp de contacto</label>
+            <input type="tel" id="mbWhatsapp" placeholder="Ej: 2645611229 (sin espacios)">
+          </div>
+          <div class="form-group">
+            <label for="mbServicio">Servicio *</label>
+            <select id="mbServicio" required></select>
+          </div>
+          <div class="form-group">
+            <label for="mbBarbero">Barbero *</label>
+            <select id="mbBarbero" required></select>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="mbFecha">Fecha *</label>
+              <input type="date" id="mbFecha" required>
+            </div>
+            <div class="form-group">
+              <label for="mbHora">Horario disponible *</label>
+              <select id="mbHora" required></select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" onclick="closeModal('manualBookingModal')">Cancelar</button>
+          <button type="submit" class="btn-primary">Registrar Turno</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT SERVICE (Agregar / Editar Servicio) -->
+  <div class="modal-overlay" id="serviceModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalServiceTitle">Agregar Servicio</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModal('serviceModal')">&times;</button>
+      </div>
+      <form id="serviceForm">
+        <input type="hidden" id="serviceId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="svcName">Nombre del Servicio *</label>
+            <input type="text" id="svcName" required placeholder="Ej: Ritual de Barba Quercia">
+          </div>
+          <div class="form-group">
+            <label for="svcDesc">Descripción *</label>
+            <textarea id="svcDesc" rows="3" required placeholder="Detalle qué incluye el servicio..."></textarea>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="svcMin">Duración (minutos) *</label>
+              <input type="number" id="svcMin" min="5" max="300" step="5" required placeholder="Ej: 45">
+            </div>
+            <div class="form-group">
+              <label for="svcPrice">Precio (ARS) *</label>
+              <input type="number" id="svcPrice" min="0" required placeholder="Ej: 22000">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" onclick="closeModal('serviceModal')">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar Servicio</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT BARBER (Agregar / Editar Barbero) -->
+  <div class="modal-overlay" id="barberModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalBarberTitle">Agregar Barbero</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModal('barberModal')">&times;</button>
+      </div>
+      <form id="barberForm">
+        <input type="hidden" id="barberIdx">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="barbName">Nombre completo *</label>
+            <input type="text" id="barbName" required placeholder="Ej: Carlos Lopez">
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="barbRole">Rol / Cargo *</label>
+              <input type="text" id="barbRole" required placeholder="Ej: Master Barber">
+            </div>
+            <div class="form-group">
+              <label for="barbInitials">Iniciales *</label>
+              <input type="text" id="barbInitials" maxlength="3" required placeholder="Ej: CL">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="barbDesc">Descripción / Bio *</label>
+            <textarea id="barbDesc" rows="3" required placeholder="Breve biografía para presentar en la web..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="barbImage">Enlace de Imagen</label>
+            <input type="text" id="barbImage" placeholder="attachment_xxx.avif o link público">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" onclick="closeModal('barberModal')">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar Barbero</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast message container -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Config defaults and dynamic loader (synchronized with index.html)
+    const DEFAULT_SERVICIOS = [
+      { nombre:"Corte de Cabello", desc:"Asesoramiento de imagen, bebida de cortesía, aplicación de productos y lavado final.", min:50, precio:22000 },
+      { nombre:"Experiencia Capilar", desc:"Asesoramiento previo, bebida de cortesía, tratamiento de nutrición y lavado final.", min:70, precio:29000 },
+      { nombre:"Corte de Cabello + Barba", desc:"Asesoramiento de imagen, bebida de cortesía y lavado de cabello al finalizar.", min:75, precio:29000 },
+      { nombre:"Barba", desc:"Perfilado o rasurado de barba a navaja.", min:30, precio:16000 },
+      { nombre:"Experiencia Quercia", desc:"Corte de cabello más una relajante limpieza facial. Ideal para salir de la rutina.", min:100, precio:38000 },
+      { nombre:"Limpieza Facial", desc:"Ideal para desechar impurezas y renovar el rostro.", min:30, precio:18000 },
+      { nombre:"Nutrición Capilar", desc:"Tratamiento breve para nutrir y reparar el cabello dañado.", min:20, precio:15000 },
+    ];
+
+    const DEFAULT_BARBEROS = [
+      {
+        nombre: "Maximo Russo",
+        rol: "Barbero Principal",
+        desc: "Especialista en cortes clásicos y degradés de precisión. Referente indiscutido del equipo Quercia.",
+        iniciales: "MR",
+        imagen: "attachment_e4dc6be19c3243b8.avif",
+        fallback: "https://placehold.co/400x500/1c1510/e5c17d?text=Maximo+Russo"
+      },
+      {
+        nombre: "Diego Sanchez",
+        rol: "Estilista & Experto en Barbas",
+        desc: "Domina el rasurado a navaja y perfilado clásico. Su precisión y esmero son altamente valorados por sus clientes habituales.",
+        iniciales: "DS",
+        imagen: "attachment_672366ecee785b09.avif",
+        fallback: "https://placehold.co/400x500/1c1510/e5c17d?text=Diego+Sanchez"
+      }
+    ];
+
+    const DEFAULT_HORARIOS = {
+      1:["10:00","21:00"], 2:["12:00","21:00"], 3:["10:00","21:00"],
+      4:["10:00","21:00"], 5:["10:00","21:00"], 6:["10:00","21:00"], 0:null
+    };
+
+    const DEFAULT_REVIEWS = [
+      { nombre: "Federico", servicio: "Corte de cabello + barba", rating: 5, quote: "Atención de calidad, excelente servicio, y el trato personal de Maxi y Diego." },
+      { nombre: "Vladimir", servicio: "Corte de cabello + barba", rating: 5, quote: "Excelencia!!" },
+      { nombre: "Marcelo", servicio: "Corte de cabello", rating: 5, quote: "Excelente atención." }
+    ];
+
+    const getStorage = (key, fallback) => {
+      const val = localStorage.getItem(key);
+      if (!val) {
+        localStorage.setItem(key, JSON.stringify(fallback));
+        return fallback;
+      }
+      return JSON.parse(val);
+    };
+
+    const setStorage = (key, data) => {
+      localStorage.setItem(key, JSON.stringify(data));
+    };
+
+    // Load active variables
+    let SERVICIOS = getStorage('quercia_servicios', DEFAULT_SERVICIOS);
+    let BARBEROS = getStorage('quercia_barberos', DEFAULT_BARBEROS);
+    let HORARIOS = getStorage('quercia_horarios', DEFAULT_HORARIOS);
+    let REVIEWS_DATA = getStorage('quercia_reseñas', DEFAULT_REVIEWS);
+    let TURNOS = getStorage('quercia_turnos', []);
+
+    // Configuración del Agente de WhatsApp
+    const DEFAULT_WA_PHONE = "542645611229";
+    const DEFAULT_WA_TEMPLATE = "¡Hola! Quiero reservar un turno en Quercia Studio Barber.\n\nServicio: {servicio}\nBarbero: {barbero}\nFecha: {fecha}\nHorario: {hora}\nNombre: {nombre}\nTel: {telefono}";
+    
+    let WA_PHONE = localStorage.getItem('quercia_whatsapp_phone') || DEFAULT_WA_PHONE;
+    let WA_TEMPLATE = localStorage.getItem('quercia_whatsapp_template') || DEFAULT_WA_TEMPLATE;
+
+    // Session security PIN
+    const ACCESS_PIN = "quercia2026";
+
+    // Format currency helper
+    const fmtPrecio = n => "$" + Number(n).toLocaleString("es-AR") + " ARS";
+
+    // Format date string helper
+    const fmtDate = dateStr => {
+      if(!dateStr) return "—";
+      const parts = dateStr.split('-');
+      const d = new Date(parts[0], parts[1] - 1, parts[2]);
+      return d.toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' });
+    };
+
+    // Toast feedback notification
+    function showToast(msg, type = "success") {
+      const toast = document.getElementById('toast');
+      toast.className = `toast show toast-${type}`;
+      toast.textContent = msg;
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    // Modal Control
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('open');
+    }
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove('open');
+    }
+
+    // Tab Navigation Routing
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        if(btn.dataset.tab === tabId) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      document.querySelectorAll('.tab-view').forEach(view => {
+        if(view.id === tabId) {
+          view.classList.add('active');
+        } else {
+          view.classList.remove('active');
+        }
+      });
+      // Render specific tab contents
+      if(tabId === 'tab-dashboard') renderDashboard();
+      else if(tabId === 'tab-turnos') renderTurnos();
+      else if(tabId === 'tab-config') renderConfig();
+      else if(tabId === 'tab-reseñas') renderReviewsAdmin();
+      else if(tabId === 'tab-whatsapp') renderWhatsApp();
+    }
+
+    document.querySelectorAll('.nav-menu .nav-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchTab(btn.dataset.tab);
+      });
+    });
+
+    // Sub-tab logic under Web Configuration tab
+    document.querySelectorAll('.config-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.config-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.config-section').forEach(sec => sec.classList.remove('active'));
+        
+        btn.classList.add('active');
+        const secId = btn.dataset.sec;
+        document.getElementById(secId).classList.add('active');
+      });
+    });
+
+    // --- LOGIN / LOGOUT AUTHENTICATION FLOW ---
+    const authOverlay = document.getElementById('authOverlay');
+    const adminLayout = document.getElementById('adminDashboardLayout');
+    const pinInput = document.getElementById('pinInput');
+
+    function checkAuth() {
+      if (sessionStorage.getItem('quercia_admin_logged') === 'true') {
+        authOverlay.style.display = 'none';
+        adminLayout.style.display = 'flex';
+        renderDashboard();
+      } else {
+        authOverlay.style.display = 'flex';
+        adminLayout.style.display = 'none';
+        pinInput.focus();
+      }
+    }
+
+    document.getElementById('btnLoginSubmit').addEventListener('click', handleLogin);
+    pinInput.addEventListener('keypress', e => {
+      if(e.key === 'Enter') handleLogin();
+    });
+
+    function handleLogin() {
+      const pin = pinInput.value.trim();
+      if (pin === ACCESS_PIN) {
+        sessionStorage.setItem('quercia_admin_logged', 'true');
+        showToast('Acceso autorizado. ¡Bienvenido!');
+        pinInput.value = '';
+        checkAuth();
+      } else {
+        showToast('Código PIN incorrecto. Intente nuevamente.', 'error');
+        pinInput.focus();
+        // Shake animation visual effect
+        const card = document.querySelector('.auth-card');
+        card.style.transform = 'translateX(10px)';
+        setTimeout(() => card.style.transform = 'translateX(-10px)', 70);
+        setTimeout(() => card.style.transform = 'translateX(5px)', 140);
+        setTimeout(() => card.style.transform = 'translateX(-5px)', 210);
+        setTimeout(() => card.style.transform = 'translateX(0)', 280);
+      }
+    }
+
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      sessionStorage.removeItem('quercia_admin_logged');
+      showToast('Sesión cerrada correctamente.');
+      checkAuth();
+    });
+
+    // --- TAB 1: DASHBOARD LOGIC ---
+    function renderDashboard() {
+      // 1. Calculate stats
+      const todayStr = new Date().toISOString().split('T')[0];
+      
+      const turnosHoyList = TURNOS.filter(t => t.fecha === todayStr);
+      const turnosHoy = turnosHoyList.length;
+      const pendientesHoy = turnosHoyList.filter(t => t.estado === 'Pendiente').length;
+
+      // Turnos next 7 days
+      const todayDateObj = new Date();
+      todayDateObj.setHours(0,0,0,0);
+      const nextWeekDateObj = new Date();
+      nextWeekDateObj.setDate(todayDateObj.getDate() + 7);
+      nextWeekDateObj.setHours(23,59,59,999);
+
+      const turnosSemana = TURNOS.filter(t => {
+        const tDate = new Date(t.fecha + "T00:00");
+        return tDate >= todayDateObj && tDate <= nextWeekDateObj && tDate.getDay() !== 0;
+      }).length;
+
+      // Active earnings estimate (Turnos Pendientes + Completados)
+      const activeEarnings = TURNOS.filter(t => t.estado !== 'Cancelado').reduce((acc, t) => acc + Number(t.precio || 0), 0);
+
+      // Reviews stats
+      const totalReviews = REVIEWS_DATA.length;
+      const sumReviews = REVIEWS_DATA.reduce((acc, r) => acc + r.rating, 0);
+      const avgReviews = totalReviews > 0 ? (sumReviews / totalReviews).toFixed(1) : "0.0";
+
+      // Set values to DOM
+      document.getElementById('metricTurnosHoy').textContent = turnosHoy;
+      document.getElementById('metricTurnosPendientesHoy').textContent = pendientesHoy;
+      document.getElementById('metricTurnosSemana').textContent = turnosSemana;
+      document.getElementById('metricIngresosActivos').textContent = fmtPrecio(activeEarnings);
+      document.getElementById('metricReseñasTotal').textContent = totalReviews + 24; // Including base verified count
+      document.getElementById('metricReseñasAvg').textContent = avgReviews;
+
+      // 2. Render Today's Next Appointments
+      const dashContainer = document.getElementById('dashboardTurnosContainer');
+      dashContainer.innerHTML = '';
+
+      // Filter and sort today's active appointments
+      const sortedHoy = turnosHoyList
+        .filter(t => t.estado === 'Pendiente')
+        .sort((a,b) => a.hora.localeCompare(b.hora));
+
+      if (sortedHoy.length === 0) {
+        dashContainer.innerHTML = '<div class="empty-state">No hay más turnos pendientes programados para hoy.</div>';
+      } else {
+        sortedHoy.forEach(t => {
+          const row = document.createElement('div');
+          row.className = 'turno-row';
+          row.style.gridTemplateColumns = '1fr 1.2fr 1fr 1fr 1.2fr';
+          
+          row.innerHTML = `
+            <div class="turno-date"><strong>${t.hora} hs</strong></div>
+            <div class="turno-client">
+              ${t.cliente}
+              ${t.whatsapp ? `<span>WhatsApp: ${t.whatsapp}</span>` : '<span>Sin teléfono</span>'}
+            </div>
+            <div class="turno-service">
+              ${t.servicio}
+              <span>${fmtPrecio(t.precio)}</span>
+            </div>
+            <div class="turno-barber">
+              <span class="turno-barber-initials">${t.barbero.split(' ').map(n=>n[0]).join('')}</span>
+              ${t.barbero.split(' ')[0]}
+            </div>
+            <div class="row-actions">
+              <button type="button" class="btn-icon btn-complete-action" onclick="changeTurnoStatus('${t.id}', 'Completado')" title="Completar Turno">
+                <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+              </button>
+              <button type="button" class="btn-icon btn-cancel-action" onclick="changeTurnoStatus('${t.id}', 'Cancelado')" title="Cancelar Turno">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+              </button>
+              ${t.whatsapp ? `
+                <a href="https://wa.me/${t.whatsapp.startsWith('54') ? '' : '54'}${t.whatsapp}?text=Hola%20${encodeURIComponent(t.cliente)},%20te%20escribimos%20de%20Quercia%20Studio%20Barber%20para%20confirmar%20tu%20turno." target="_blank" class="btn-icon" title="Escribir por WhatsApp">
+                  <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                </a>
+              ` : ''}
+            </div>
+          `;
+          dashContainer.appendChild(row);
+        });
+      }
+
+      // 3. Render Barbers Active status
+      const barbersStatusContainer = document.getElementById('dashboardBarberosStatus');
+      barbersStatusContainer.innerHTML = '';
+      
+      BARBEROS.forEach(b => {
+        // Count today's turnos for this barber
+        const barbTodayTurnos = turnosHoyList.filter(t => t.barbero === b.nombre && t.estado !== 'Cancelado').length;
+        
+        const card = document.createElement('div');
+        card.style.display = 'flex';
+        card.style.alignItems = 'center';
+        card.style.gap = '14px';
+        card.style.padding = '12px 14px';
+        card.style.background = 'rgba(26, 20, 16, 0.3)';
+        card.style.border = '1px solid var(--line)';
+        card.style.borderRadius = '8px';
+        
+        card.innerHTML = `
+          <img src="${b.imagen}" alt="${b.nombre}" onerror="this.src='https://placehold.co/80/1c1510/e5c17d?text=${b.iniciales}'" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid var(--glass-border);">
+          <div style="flex-grow:1;">
+            <h4 style="font-size:0.95rem; color:var(--parchment);">${b.nombre}</h4>
+            <p style="font-size:0.8rem; color:var(--parchment-dim);">${b.rol}</p>
+          </div>
+          <div class="mono" style="font-size:0.75rem; text-align:right;">
+            <strong style="color:var(--brass-bright);">${barbTodayTurnos}</strong> turnos hoy
+          </div>
+        `;
+        barbersStatusContainer.appendChild(card);
+      });
+    }
+
+    // --- TAB 2: TURNOS MANAGEMENT ---
+    function renderTurnos() {
+      // Populate filters selects
+      const barbFilter = document.getElementById('filterBarber');
+      const savedVal = barbFilter.value;
+      barbFilter.innerHTML = '<option value="todos">Todos los barberos</option>';
+      BARBEROS.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b.nombre;
+        opt.textContent = b.nombre;
+        barbFilter.appendChild(opt);
+      });
+      barbFilter.value = savedVal || "todos";
+
+      filterAppointments();
+    }
+
+    // Filters event listeners
+    document.getElementById('filterDate').addEventListener('change', filterAppointments);
+    document.getElementById('filterBarber').addEventListener('change', filterAppointments);
+    document.getElementById('filterStatus').addEventListener('change', filterAppointments);
+    document.getElementById('btnClearFilters').addEventListener('click', () => {
+      document.getElementById('filterDate').value = '';
+      document.getElementById('filterBarber').value = 'todos';
+      document.getElementById('filterStatus').value = 'todos';
+      filterAppointments();
+    });
+
+    function filterAppointments() {
+      const dateVal = document.getElementById('filterDate').value;
+      const barberVal = document.getElementById('filterBarber').value;
+      const statusVal = document.getElementById('filterStatus').value;
+
+      let filtered = [...TURNOS];
+
+      // Sort chronological descending (latest bookings first)
+      filtered.sort((a, b) => {
+        const dateA = a.fecha + "T" + (a.hora || "00:00");
+        const dateB = b.fecha + "T" + (b.hora || "00:00");
+        return dateB.localeCompare(dateA);
+      });
+
+      if (dateVal) {
+        filtered = filtered.filter(t => t.fecha === dateVal);
+      }
+      if (barberVal !== 'todos') {
+        filtered = filtered.filter(t => t.barbero === barberVal);
+      }
+      if (statusVal !== 'todos') {
+        filtered = filtered.filter(t => t.estado === statusVal);
+      }
+
+      // Render appointments count
+      document.getElementById('turnosFilteredCount').textContent = `Mostrando ${filtered.length} de ${TURNOS.length} turnos`;
+
+      const container = document.getElementById('turnosTableContainer');
+      container.innerHTML = '';
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state">No se encontraron turnos con los filtros seleccionados.</div>';
+        return;
+      }
+
+      filtered.forEach(t => {
+        const row = document.createElement('div');
+        row.className = 'turno-row';
+
+        let badgeClass = 'badge-pending';
+        if (t.estado === 'Completado') badgeClass = 'badge-completed';
+        else if (t.estado === 'Cancelado') badgeClass = 'badge-cancelled';
+
+        row.innerHTML = `
+          <div class="turno-client">
+            ${t.cliente}
+            ${t.whatsapp ? `<span>WhatsApp: ${t.whatsapp}</span>` : '<span>Sin teléfono</span>'}
+          </div>
+          <div class="turno-service">
+            ${t.servicio}
+            <span>${fmtPrecio(t.precio)}</span>
+          </div>
+          <div class="turno-date">
+            <strong>${fmtDate(t.fecha)}</strong>
+            <span>a las ${t.hora} hs</span>
+          </div>
+          <div class="turno-barber">
+            <span class="turno-barber-initials">${t.barbero.split(' ').map(n=>n[0]).join('')}</span>
+            ${t.barbero}
+          </div>
+          <div>
+            <span class="badge ${badgeClass}">${t.estado}</span>
+          </div>
+          <div class="row-actions">
+            ${t.estado === 'Pendiente' ? `
+              <button type="button" class="btn-icon btn-complete-action" onclick="changeTurnoStatus('${t.id}', 'Completado')" title="Marcar como Completado">
+                <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+              </button>
+              <button type="button" class="btn-icon btn-cancel-action" onclick="changeTurnoStatus('${t.id}', 'Cancelado')" title="Cancelar Reserva">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+              </button>
+            ` : ''}
+            ${t.whatsapp ? `
+              <a href="https://wa.me/${t.whatsapp.startsWith('54') ? '' : '54'}${t.whatsapp}?text=Hola%20${encodeURIComponent(t.cliente)},%20te%20escribimos%20de%20Quercia%20Studio%20Barber." target="_blank" class="btn-icon" title="Escribir WhatsApp">
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+              </a>
+            ` : ''}
+            <button type="button" class="btn-icon" onclick="deleteTurno('${t.id}')" title="Eliminar del Registro">
+              <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            </button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function changeTurnoStatus(id, state) {
+      TURNOS = TURNOS.map(t => {
+        if(t.id === id) t.estado = state;
+        return t;
+      });
+      setStorage('quercia_turnos', TURNOS);
+      showToast(`Turno actualizado a "${state}" con éxito.`);
+      
+      const currentTab = document.querySelector('.nav-item.active').dataset.tab;
+      if (currentTab === 'tab-dashboard') renderDashboard();
+      else filterAppointments();
+    }
+
+    function deleteTurno(id) {
+      if(!confirm('¿Estás seguro de que deseas eliminar permanentemente este turno del registro de Quercia?')) return;
+      TURNOS = TURNOS.filter(t => t.id !== id);
+      setStorage('quercia_turnos', TURNOS);
+      showToast('Turno eliminado del registro.');
+      filterAppointments();
+    }
+
+    // --- TAB 3: WEB CONFIGURATION LOGIC ---
+    function renderConfig() {
+      // 1. Render Services Panel
+      const svcContainer = document.getElementById('configServicesContainer');
+      svcContainer.innerHTML = '';
+      
+      SERVICIOS.forEach((s, idx) => {
+        const card = document.createElement('div');
+        card.className = 'config-item-card';
+        card.innerHTML = `
+          <div class="config-item-info">
+            <h4>${s.nombre}</h4>
+            <p>${s.desc}</p>
+          </div>
+          <div class="config-item-meta">
+            <span>Duración: ${s.min} min</span>
+            <strong>${fmtPrecio(s.precio)}</strong>
+          </div>
+          <div class="config-item-actions">
+            <button type="button" class="btn-icon" onclick="openEditService(${idx})" title="Editar Servicio">
+              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </button>
+            <button type="button" class="btn-icon" onclick="deleteService(${idx})" title="Eliminar Servicio">
+              <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            </button>
+          </div>
+        `;
+        svcContainer.appendChild(card);
+      });
+
+      // 2. Render Barbers Panel
+      const barbContainer = document.getElementById('configBarbersContainer');
+      barbContainer.innerHTML = '';
+      
+      BARBEROS.forEach((b, idx) => {
+        const card = document.createElement('div');
+        card.className = 'config-item-card';
+        card.innerHTML = `
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <img src="${b.imagen}" alt="${b.nombre}" onerror="this.src='https://placehold.co/80/1c1510/e5c17d?text=${b.iniciales}'" style="width:58px; height:58px; border-radius:50%; object-fit:cover; border:1px solid var(--glass-border);">
+            <div class="config-item-info">
+              <h4 style="margin-bottom:2px;">${b.nombre}</h4>
+              <span class="mono" style="font-size:0.75rem; color:var(--brass-bright); display:block; margin-bottom:8px;">${b.rol}</span>
+              <p>${b.desc}</p>
+            </div>
+          </div>
+          <div class="config-item-meta">
+            <span>Iniciales: ${b.iniciales}</span>
+            <span>ID: ${idx + 1}</span>
+          </div>
+          <div class="config-item-actions">
+            <button type="button" class="btn-icon" onclick="openEditBarber(${idx})" title="Editar Barbero">
+              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </button>
+            <button type="button" class="btn-icon" onclick="deleteBarber(${idx})" title="Eliminar del equipo">
+              <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            </button>
+          </div>
+        `;
+        barbContainer.appendChild(card);
+      });
+
+      // 3. Render Schedule Table
+      const schedBody = document.getElementById('scheduleTableBody');
+      schedBody.innerHTML = '';
+      
+      const DIAS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      
+      // Let's populate the form weekdays (0 to 6)
+      for (let i = 0; i <= 6; i++) {
+        const hrs = HORARIOS[i];
+        const isOpen = hrs !== null;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${DIAS[i]}</td>
+          <td>
+            <select name="status_${i}" style="padding: 6px 12px; font-size:0.85rem;" onchange="toggleDayRow(${i}, this.value)">
+              <option value="open" ${isOpen ? 'selected' : ''}>Abierto</option>
+              <option value="closed" ${!isOpen ? 'selected' : ''}>Cerrado</option>
+            </select>
+          </td>
+          <td>
+            <div class="schedule-time-inputs" id="range_${i}" style="${isOpen ? '' : 'opacity: 0.35; pointer-events: none;'}">
+              <input type="text" name="open_${i}" value="${isOpen ? hrs[0] : '10:00'}" placeholder="Apertura" style="padding: 6px; font-size:0.85rem;" ${isOpen ? 'required' : ''}>
+              <span>a</span>
+              <input type="text" name="close_${i}" value="${isOpen ? hrs[1] : '21:00'}" placeholder="Cierre" style="padding: 6px; font-size:0.85rem;" ${isOpen ? 'required' : ''}>
+            </div>
+          </td>
+        `;
+        schedBody.appendChild(row);
+      }
+    }
+
+    function toggleDayRow(dayIdx, value) {
+      const container = document.getElementById(`range_${dayIdx}`);
+      const inputs = container.querySelectorAll('input');
+      
+      if (value === 'closed') {
+        container.style.opacity = '0.35';
+        container.style.pointerEvents = 'none';
+        inputs.forEach(inp => inp.removeAttribute('required'));
+      } else {
+        container.style.opacity = '1';
+        container.style.pointerEvents = 'auto';
+        inputs.forEach(inp => inp.setAttribute('required', 'true'));
+      }
+    }
+
+    // Schedule Save Submission
+    document.getElementById('scheduleForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const form = e.target;
+      const newHorarios = {};
+      
+      for (let i = 0; i <= 6; i++) {
+        const isOpen = form[`status_${i}`].value === 'open';
+        if (isOpen) {
+          const openH = form[`open_${i}`].value.trim();
+          const closeH = form[`close_${i}`].value.trim();
+          
+          // Basic HH:MM validation format
+          const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+          if (!timeRegex.test(openH) || !timeRegex.test(closeH)) {
+            showToast('Formato de hora inválido (use HH:MM). Ejemplo: 10:00', 'error');
+            return;
+          }
+          newHorarios[i] = [openH, closeH];
+        } else {
+          newHorarios[i] = null;
+        }
+      }
+
+      HORARIOS = newHorarios;
+      setStorage('quercia_horarios', HORARIOS);
+      showToast('Horarios de atención actualizados.');
+      renderConfig();
+    });
+
+    // --- SERVICES FORM CRUD ---
+    const serviceModal = document.getElementById('serviceModal');
+    const serviceForm = document.getElementById('serviceForm');
+
+    document.getElementById('btnAddService').addEventListener('click', () => {
+      document.getElementById('modalServiceTitle').textContent = "Agregar Servicio";
+      document.getElementById('serviceId').value = '';
+      serviceForm.reset();
+      openModal('serviceModal');
+    });
+
+    function openEditService(idx) {
+      const s = SERVICIOS[idx];
+      document.getElementById('modalServiceTitle').textContent = "Editar Servicio";
+      document.getElementById('serviceId').value = idx;
+      document.getElementById('svcName').value = s.nombre;
+      document.getElementById('svcDesc').value = s.desc;
+      document.getElementById('svcMin').value = s.min;
+      document.getElementById('svcPrice').value = s.precio;
+      openModal('serviceModal');
+    }
+
+    serviceForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const idxStr = document.getElementById('serviceId').value;
+      const nombre = document.getElementById('svcName').value.trim();
+      const desc = document.getElementById('svcDesc').value.trim();
+      const min = parseInt(document.getElementById('svcMin').value);
+      const precio = parseInt(document.getElementById('svcPrice').value);
+
+      const data = { nombre, desc, min, precio };
+
+      if (idxStr === '') {
+        // Create new
+        SERVICIOS.push(data);
+        showToast('Servicio creado correctamente.');
+      } else {
+        // Edit existing
+        const idx = parseInt(idxStr);
+        SERVICIOS[idx] = data;
+        showToast('Servicio actualizado con éxito.');
+      }
+
+      setStorage('quercia_servicios', SERVICIOS);
+      closeModal('serviceModal');
+      renderConfig();
+    });
+
+    function deleteService(idx) {
+      if(!confirm(`¿Deseas eliminar el servicio "${SERVICIOS[idx].nombre}" de la carta de la barbería?`)) return;
+      SERVICIOS.splice(idx, 1);
+      setStorage('quercia_servicios', SERVICIOS);
+      showToast('Servicio eliminado.');
+      renderConfig();
+    }
+
+    // --- BARBERS FORM CRUD ---
+    const barberModal = document.getElementById('barberModal');
+    const barberForm = document.getElementById('barberForm');
+
+    document.getElementById('btnAddBarber').addEventListener('click', () => {
+      document.getElementById('modalBarberTitle').textContent = "Agregar Barbero";
+      document.getElementById('barberIdx').value = '';
+      barberForm.reset();
+      openModal('barberModal');
+    });
+
+    function openEditBarber(idx) {
+      const b = BARBEROS[idx];
+      document.getElementById('modalBarberTitle').textContent = "Editar Barbero";
+      document.getElementById('barberIdx').value = idx;
+      document.getElementById('barbName').value = b.nombre;
+      document.getElementById('barbRole').value = b.rol;
+      document.getElementById('barbInitials').value = b.iniciales;
+      document.getElementById('barbDesc').value = b.desc;
+      document.getElementById('barbImage').value = b.imagen;
+      openModal('barberModal');
+    }
+
+    barberForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const idxStr = document.getElementById('barberIdx').value;
+      const nombre = document.getElementById('barbName').value.trim();
+      const rol = document.getElementById('barbRole').value.trim();
+      const initials = document.getElementById('barbInitials').value.trim().toUpperCase();
+      const desc = document.getElementById('barbDesc').value.trim();
+      let imagen = document.getElementById('barbImage').value.trim();
+
+      if (!imagen) {
+        imagen = `https://placehold.co/400x500/1c1510/e5c17d?text=${encodeURIComponent(nombre)}`;
+      }
+
+      const data = {
+        nombre, rol, desc,
+        iniciales: initials,
+        imagen: imagen,
+        fallback: `https://placehold.co/400x500/1c1510/e5c17d?text=${encodeURIComponent(nombre)}`
+      };
+
+      if (idxStr === '') {
+        BARBEROS.push(data);
+        showToast('Nuevo barbero agregado al equipo.');
+      } else {
+        const idx = parseInt(idxStr);
+        BARBEROS[idx] = data;
+        showToast('Datos del barbero actualizados.');
+      }
+
+      setStorage('quercia_barberos', BARBEROS);
+      closeModal('barberModal');
+      renderConfig();
+    });
+
+    function deleteBarber(idx) {
+      if(!confirm(`¿Deseas dar de baja a "${BARBEROS[idx].nombre}" del equipo?`)) return;
+      BARBEROS.splice(idx, 1);
+      setStorage('quercia_barberos', BARBEROS);
+      showToast('Barbero eliminado.');
+      renderConfig();
+    }
+
+    // --- TAB 4: REVIEWS MODERATION LOGIC ---
+    function renderReviewsAdmin() {
+      const container = document.getElementById('reviewsAdminContainer');
+      container.innerHTML = '';
+      
+      document.getElementById('reseñasAdminCount').textContent = `${REVIEWS_DATA.length + 24} opiniones totales`;
+
+      if (REVIEWS_DATA.length === 0) {
+        container.innerHTML = '<div class="empty-state">No hay opiniones publicadas por clientes en la base local.</div>';
+        return;
+      }
+
+      REVIEWS_DATA.forEach((r, idx) => {
+        const card = document.createElement('div');
+        card.className = 'review-admin-card';
+        
+        let starsHtml = '';
+        for (let i = 0; i < 5; i++) {
+          starsHtml += i < r.rating ? '★' : '☆';
+        }
+
+        card.innerHTML = `
+          <div>
+            <div class="stars">${starsHtml}</div>
+            <div class="review-admin-text">"${r.quote}"</div>
+          </div>
+          <div class="review-admin-meta">
+            ${r.nombre} · <span style="color:var(--brass-bright);">${r.servicio}</span>
+          </div>
+          <button type="button" class="btn-review-delete" onclick="deleteReview(${idx})">Eliminar</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Moderate review delete
+    function deleteReview(idx) {
+      if (!confirm('¿Estás seguro de que deseas eliminar permanentemente esta reseña de la página?')) return;
+      
+      const r = REVIEWS_DATA[idx];
+      REVIEWS_DATA.splice(idx, 1);
+      setStorage('quercia_reseñas', REVIEWS_DATA);
+      showToast(`Reseña de ${r.nombre} eliminada correctamente.`);
+      renderReviewsAdmin();
+    }
+
+    // --- MODAL: MANUAL APPOINTMENT BOOKING FORM LOGIC ---
+    const manualBookingForm = document.getElementById('manualBookingForm');
+    const mbServicioSelect = document.getElementById('mbServicio');
+    const mbBarberoSelect = document.getElementById('mbBarbero');
+    const mbFechaInput = document.getElementById('mbFecha');
+    const mbHoraSelect = document.getElementById('mbHora');
+
+    function populateBookingModalOptions() {
+      // Services dropdown
+      mbServicioSelect.innerHTML = '<option value="" disabled selected>Seleccioná un servicio</option>';
+      SERVICIOS.forEach((s, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = `${s.nombre} (${s.min} min) — ${fmtPrecio(s.precio)}`;
+        mbServicioSelect.appendChild(opt);
+      });
+
+      // Barbers dropdown
+      mbBarberoSelect.innerHTML = '<option value="" disabled selected>Seleccioná un barbero</option>';
+      BARBEROS.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b.nombre;
+        opt.textContent = b.nombre;
+        mbBarberoSelect.appendChild(opt);
+      });
+
+      // Clear dates and hours
+      mbFechaInput.value = '';
+      mbHoraSelect.innerHTML = '<option value="" disabled selected>Elegí la fecha primero</option>';
+    }
+
+    // Trigger options loading on manual booking actions
+    document.getElementById('btnManualBookingDash').addEventListener('click', () => {
+      populateBookingModalOptions();
+      openModal('manualBookingModal');
+    });
+    document.getElementById('btnManualBookingTurnos').addEventListener('click', () => {
+      populateBookingModalOptions();
+      openModal('manualBookingModal');
+    });
+
+    // Populate hour slots dynamically based on selected date
+    mbFechaInput.addEventListener('change', () => {
+      const dateStr = mbFechaInput.value;
+      if (!dateStr) return;
+      
+      const dateObj = new Date(dateStr + "T00:00");
+      const day = dateObj.getDay();
+      
+      const rango = HORARIOS[day];
+      mbHoraSelect.innerHTML = '';
+      
+      if (!rango) {
+        mbHoraSelect.innerHTML = '<option value="" disabled selected>Cerrado este día</option>';
+        return;
+      }
+      
+      const [openH] = rango[0].split(":").map(Number);
+      const [closeH] = rango[1].split(":").map(Number);
+      
+      // Check already booked slots for this date and barber
+      const selectedBarber = mbBarberoSelect.value;
+      const bookedSlots = TURNOS
+        .filter(t => t.fecha === dateStr && t.barbero === selectedBarber && t.estado === 'Pendiente')
+        .map(t => t.hora);
+
+      let optionsAdded = false;
+      for (let h = openH; h < closeH; h++) {
+        ["00", "30"].forEach(m => {
+          if (h === closeH - 1 && m === "30") return;
+          const timeLabel = `${String(h).padStart(2, '0')}:${m}`;
+          
+          const opt = document.createElement('option');
+          opt.value = timeLabel;
+          
+          const isBooked = bookedSlots.includes(timeLabel);
+          if (isBooked) {
+            opt.textContent = `${timeLabel} (Ocupado)`;
+            opt.disabled = true;
+          } else {
+            opt.textContent = timeLabel;
+            optionsAdded = true;
+          }
+          mbHoraSelect.appendChild(opt);
+        });
+      }
+
+      if (!optionsAdded) {
+        mbHoraSelect.innerHTML = '<option value="" disabled selected>No hay horarios libres</option>';
+      } else {
+        // Add a placeholder selected
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        placeholder.textContent = 'Seleccioná un horario';
+        mbHoraSelect.prepend(placeholder);
+      }
+    });
+
+    // Handle Manual Booking submission
+    manualBookingForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const cliente = document.getElementById('mbCliente').value.trim();
+      const whatsapp = document.getElementById('mbWhatsapp').value.trim();
+      const svcIdx = parseInt(mbServicioSelect.value);
+      const barbero = mbBarberoSelect.value;
+      const fecha = mbFechaInput.value;
+      const hora = mbHoraSelect.value;
+
+      if (isNaN(svcIdx) || !barbero || !fecha || !hora) {
+        showToast('Por favor complete todos los campos obligatorios.', 'error');
+        return;
+      }
+
+      const s = SERVICIOS[svcIdx];
+
+      const nuevoTurno = {
+        id: "Q-" + Date.now(),
+        cliente, whatsapp, barbero, fecha, hora,
+        servicio: s.nombre,
+        precio: s.precio,
+        estado: "Pendiente",
+        creado: new Date().toISOString()
+      };
+
+      TURNOS.push(nuevoTurno);
+      setStorage('quercia_turnos', TURNOS);
+      showToast('Turno manual registrado correctamente.');
+      
+      closeModal('manualBookingModal');
+      
+      const currentTab = document.querySelector('.nav-item.active').dataset.tab;
+      if (currentTab === 'tab-dashboard') renderDashboard();
+      else filterAppointments();
+    });
+
+    // --- WHATSAPP CONFIG FORM ---
+    function renderWhatsApp() {
+      document.getElementById('waPhone').value = WA_PHONE;
+      document.getElementById('waMessageTemplate').value = WA_TEMPLATE;
+    }
+
+    const whatsappConfigForm = document.getElementById('whatsappConfigForm');
+    if (whatsappConfigForm) {
+      whatsappConfigForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const phone = document.getElementById('waPhone').value.trim();
+        const template = document.getElementById('waMessageTemplate').value;
+
+        // Basic validation: 10 to 15 digits
+        if (!/^\d{10,15}$/.test(phone)) {
+          showToast('Número de teléfono inválido. Debe contener entre 10 y 15 dígitos sin caracteres especiales.', 'error');
+          return;
+        }
+
+        WA_PHONE = phone;
+        WA_TEMPLATE = template;
+
+        localStorage.setItem('quercia_whatsapp_phone', WA_PHONE);
+        localStorage.setItem('quercia_whatsapp_template', WA_TEMPLATE);
+
+        showToast('Configuración de WhatsApp guardada con éxito.');
+        renderWhatsApp();
+      });
+    }
+
+    // --- MOBILE LOGOUT ACTION ---
+    const btnLogoutMobile = document.getElementById('btnLogoutMobile');
+    if (btnLogoutMobile) {
+      btnLogoutMobile.addEventListener('click', () => {
+        sessionStorage.removeItem('quercia_admin_logged');
+        showToast('Sesión cerrada correctamente.');
+        checkAuth();
+      });
+    }
+
+    // Run initial page check
+    checkAuth();
+
+  </script>
+</body>
 </html>
