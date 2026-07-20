@@ -1,0 +1,26 @@
+{
+  "name": "miturno",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dg203302/MiTurno.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dg203302/MiTurno/issues"
+  },
+  "homepage": "https://github.com/dg203302/MiTurno#readme",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "qrcode-terminal": "^0.12.0",
+    "socket.io": "^4.8.3",
+    "whatsapp-web.js": "^1.34.7"
+  }
+}

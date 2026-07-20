@@ -1,0 +1,14 @@
+2026/07/19-19:21:13.675 32dd Reusing MANIFEST /home/diego/Desktop/Repositorios/MiTurno/.wwebjs_auth/session/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/07/19-19:21:13.676 32dd Recovering log #75
+2026/07/19-19:21:13.744 32dd Reusing old log /home/diego/Desktop/Repositorios/MiTurno/.wwebjs_auth/session/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000075.log 
+2026/07/19-19:21:13.745 32dd Delete type=2 #74
+2026/07/19-19:21:13.745 32dd Delete type=2 #76
+2026/07/19-19:21:26.219 32dd Level-0 table #80: started
+2026/07/19-19:21:26.255 32dd Level-0 table #80: 1136116 bytes OK
+2026/07/19-19:21:26.257 32dd Delete type=0 #75
+2026/07/19-19:21:27.246 32e8 Compacting 1@1 + 1@2 files
+2026/07/19-19:21:27.322 32e8 Generated table #81@1: 23890 keys, 975372 bytes
+2026/07/19-19:21:27.322 32e8 Compacted 1@1 + 1@2 files => 975372 bytes
+2026/07/19-19:21:27.323 32e8 compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/07/19-19:21:27.323 32e8 Delete type=2 #77
+2026/07/19-19:21:27.323 32e8 Delete type=2 #80
