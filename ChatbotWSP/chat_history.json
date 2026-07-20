@@ -1,0 +1,26 @@
+[
+  {
+    "sender": "cliente",
+    "numero": "115715092779249",
+    "texto": "holaa",
+    "timestamp": 1784504860389
+  },
+  {
+    "sender": "bot",
+    "numero": "115715092779249",
+    "texto": "¡Hola! 👋 Soy el bot de turnos de Quercia Studio Barber. Te voy a ayudar a agendar tu turno paso a paso.\n\nPara arrancar, ¿qué servicio querés reservar? Estos son los disponibles con su duración y precio:\n\n1. Corte de Cabello — 50 min — $22.000 ARS  \n2. Experiencia Capilar — 70 min — $29.000 ARS  \n3. Corte de Cabello + Barba — 75 min — $29.000 ARS  \n4. Barba — 30 min — $16.000 ARS  \n5. Experiencia Quercia — 100 min — $38.000 ARS  \n6. Limpieza Facial — 30 min — $18.000 ARS  \n7. Nutrición Capilar — 20 min — $15.000 ARS  \n8. Prueba de servicio agregado - 20 min - $2 ARS\n\nEscribime el número o el nombre del que te interese.",
+    "timestamp": 1784504893039
+  },
+  {
+    "sender": "cliente",
+    "numero": "115715092779249",
+    "texto": "quiero un helado si puede ser",
+    "timestamp": 1784504909247
+  },
+  {
+    "sender": "bot",
+    "numero": "115715092779249",
+    "texto": "¡Jaja, un helado no es algo que podamos reservar por acá! 😄\n\nSoy el bot de turnos de Quercia Studio Barber y solo agendamos servicios de barbería. Estos son los disponibles con su duración y precio:\n\n1. Corte de Cabello — 50 min — $22.000 ARS  \n2. Experiencia Capilar — 70 min — $29.000 ARS  \n3. Corte de Cabello + Barba — 75 min — $29.000 ARS  \n4. Barba — 30 min — $16.000 ARS  \n5. Experiencia Quercia — 100 min — $38.000 ARS  \n6. Limpieza Facial — 30 min — $18.000 ARS  \n7. Nutrición Capilar — 20 min — $15.000 ARS  \n8. Prueba de servicio agregado - 20 min - $2 ARS\n\nEscribime el número o el nombre del que te interese para seguir con tu turno.",
+    "timestamp": 1784504941359
+  }
+]
