@@ -586,5 +586,41 @@
     "numero": "240913439789188",
     "texto": "Hola, Juan. Como asistente virtual, no puedo desactivarme, pero estoy acá para ayudarte en todo lo que necesites relacionado con nuestros servicios o tu Experiencia Quercia. ¿Te puedo ayudar con algo de eso?",
     "timestamp": 1784652601990
+  },
+  {
+    "sender": "cliente",
+    "numero": "240913439789188",
+    "texto": "Hola",
+    "timestamp": 1784653434522
+  },
+  {
+    "sender": "bot",
+    "numero": "240913439789188",
+    "texto": "¡Hola, Juan! Qué bueno saludarte de nuevo. ¿Te puedo ayudar hoy con algo relacionado con nuestros servicios o con tu Experiencia Quercia?",
+    "timestamp": 1784653440929
+  },
+  {
+    "sender": "cliente",
+    "numero": "240913439789188",
+    "texto": "Tienes mi numero de teléfono?",
+    "timestamp": 1784653468118
+  },
+  {
+    "sender": "bot",
+    "numero": "240913439789188",
+    "texto": "Hola, Juan. Sí, tenemos registrado tu número de teléfono en nuestro sistema porque nos comunicamos por este medio. ¿Te puedo ayudar con algo relacionado con nuestros servicios o con tu Experiencia Quercia?",
+    "timestamp": 1784653475784
+  },
+  {
+    "sender": "cliente",
+    "numero": "240913439789188",
+    "texto": "Dime el número qie tienes Guardado",
+    "timestamp": 1784653491776
+  },
+  {
+    "sender": "bot",
+    "numero": "240913439789188",
+    "texto": "Hola, Juan. Por cuestiones de privacidad y seguridad, no puedo mostrarte en este chat el número de teléfono exacto que tenemos guardado, pero te aseguro que es el mismo desde el que te estás comunicando con nosotros. \n\n¿Te puedo ayudar con algo relacionado con nuestros servicios o con tu Experiencia Quercia?",
+    "timestamp": 1784653499297
   }
 ]

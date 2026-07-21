@@ -18,8 +18,8 @@ try {
     ReglasRespActuales = "Por favor responde amablemente y ayuda al usuario a agendar un turno.";
 }
 
-let historialesIA = {}
 let SesionLista = false;
+
 let QR_Act = ''
 
 //1ero levantar el servidor
@@ -124,8 +124,10 @@ function iniciarWSP() {
             const esGrupo = msg.from.endsWith('@g.us') || (msg.to && msg.to.endsWith('@g.us'));
             if (esGrupo) return;
 
-            // 4. Validar que el remitente o destinatario sea un número de usuario estándar
-            const esUsuarioValido = msg.from.endsWith('@c.us') || (msg.to && msg.to.endsWith('@c.us'));
+            // 4. Validar que el remitente o destinatario sea un número de usuario estándar o @lid
+            const esUsuarioValido =
+                msg.from.endsWith('@c.us') || (msg.to && msg.to.endsWith('@c.us')) ||
+                msg.from.endsWith('@lid') || (msg.to && msg.to.endsWith('@lid'));
             if (!esUsuarioValido) return;
 
             // Guardar el mensaje entrante/saliente en el historial persistente
@@ -150,7 +152,6 @@ function iniciarWSP() {
                 .map(h => `${h.sender === 'bot' ? 'Respuesta Chatbot' : 'Mensaje Usuario'}: ${h.texto}`)
                 .join('\n');
 
-            historialesIA[clientNumber] = historialTexto;
 
             console.log(`[IA] Generando respuesta para ${clientNumber}...`);
             const mens_resp = await GenerarResp_IA(msg, historialTexto);
@@ -160,10 +161,6 @@ function iniciarWSP() {
                 msg.reply(mens_resp);
                 guardarMensajeHistorial('bot', clientNumber, mens_resp);
             }, calcularDelay(mens_resp));
-
-            if (msg.body.toLowerCase() === 'hola') {
-                await msg.reply('Buenas!. Soy Camila la asistente virtual de Quercia Barber Studio');
-            }
         } catch (error) {
             console.error("Error crítico en el manejador de mensajes:", error);
         }
@@ -236,10 +233,11 @@ Socket_Bidirecc.on('connection', (Socket) => {
 })
 
 function calcularDelay(texto_resp) {
-    const tiempoReaccion = 1000; // 1 segundo de pausa inicial
-    const msPorCaracter = 40;    // 40 ms por cada letra (velocidad humana realista)
+    const tiempoReaccion = 800;  // 0.8 segundos de pausa inicial
+    const msPorCaracter = 25;    // 25 ms por letra (más natural y sin esperas largas)
+    const maxDelay = 6000;       // máximo 6 segundos para no hacer esperar demasiado
     const tiempoTipeo = [...texto_resp].length * msPorCaracter;
-    return tiempoReaccion + tiempoTipeo;
+    return Math.min(tiempoReaccion + tiempoTipeo, maxDelay);
 }
 
 async function GenerarResp_IA(mensaje_Actu, Historial) {
