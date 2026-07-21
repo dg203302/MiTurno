@@ -201,24 +201,31 @@
     }
 
     .sidebar-footer {
-      padding-top: 20px;
+      padding-top: 16px;
       border-top: 1px solid var(--line);
     }
 
     .btn-logout {
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
+      gap: 8px;
       width: 100%;
-      padding: 12px 16px;
+      padding: 8px 12px;
       background: transparent;
       border: 1px solid rgba(90, 20, 26, 0.3);
       color: #e63946;
       border-radius: 6px;
       font-family: 'Space Mono', monospace;
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       transition: all 0.3s ease;
+    }
+
+    .btn-logout svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
     }
 
     .btn-logout:hover {
@@ -579,6 +586,7 @@
 
     select,
     input[type=text],
+    input[type=password],
     input[type=tel],
     input[type=number],
     input[type=date],
@@ -592,6 +600,14 @@
       font-family: 'Spectral', serif;
       font-size: 0.95rem;
       transition: all 0.3s ease;
+    }
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px rgba(10, 8, 6, 0.95) inset !important;
+      -webkit-text-fill-color: var(--parchment) !important;
     }
 
     select:focus,
@@ -983,6 +999,33 @@
       margin-bottom: 30px;
     }
 
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .btn-toggle-pass {
+      position: absolute;
+      right: 8px;
+      background: transparent;
+      border: none;
+      color: var(--brass-bright);
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-toggle-pass:hover {
+      color: var(--parchment);
+      background: rgba(197, 160, 89, 0.15);
+    }
+
     /* Toasts */
     .toast {
       position: fixed;
@@ -1255,18 +1298,89 @@
     /* WhatsApp Chatbot CSS Styles */
     #QR {
       display: none;
-      text-align: center;
       margin: 0 auto;
       animation: fadeIn 0.4s ease-out;
+    }
+
+    .qr-grid-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .qr-grid-layout {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    .qr-instructions-col {
+      padding: 36px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .qr-title {
+      font-family: 'Fraunces', serif;
+      color: var(--brass-bright);
+      font-size: 1.65rem;
+      margin-bottom: 24px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .qr-steps-list {
+      margin: 0;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      color: var(--parchment-dim);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .qr-steps-list li::marker {
+      color: var(--brass-bright);
+      font-weight: bold;
+    }
+
+    .qr-code-col {
+      background: rgba(10, 8, 6, 0.4);
+      padding: 36px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-top: 1px solid var(--line);
+    }
+
+    @media (min-width: 768px) {
+      .qr-code-col {
+        border-top: none;
+        border-left: 1px solid var(--line);
+      }
     }
 
     #QR-canvas-wrapper {
       background: white;
       padding: 16px;
-      border-radius: 12px;
-      display: inline-block;
-      margin-top: 15px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      margin-top: 0;
+    }
+
+    .qr-caption {
+      color: var(--parchment-dim);
+      font-size: 0.8rem;
+      margin-top: 20px;
+      text-align: center;
+      line-height: 1.4;
+      max-width: 240px;
     }
 
     #ChatContainer {
@@ -1308,6 +1422,70 @@
 
     #Historial_Chat::-webkit-scrollbar-thumb:hover {
       background: rgba(197, 160, 89, 0.4);
+    }
+
+    /* Chat Client Sub-Tabs */
+    .chat-tabs-wrapper {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      border-bottom: 1px dashed var(--line);
+      scroll-behavior: smooth;
+    }
+
+    .chat-tabs-wrapper::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .chat-tabs-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(197, 160, 89, 0.3);
+      border-radius: 4px;
+    }
+
+    .chat-tab-btn {
+      background: rgba(10, 8, 6, 0.5);
+      border: 1px solid var(--glass-border);
+      color: var(--parchment-dim);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chat-tab-btn:hover {
+      border-color: var(--brass-bright);
+      color: var(--parchment);
+      background: rgba(197, 160, 89, 0.1);
+    }
+
+    .chat-tab-btn.active {
+      background: rgba(197, 160, 89, 0.15);
+      border-color: var(--brass);
+      color: var(--brass-bright);
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(197, 160, 89, 0.15);
+    }
+
+    .chat-tab-badge {
+      background: rgba(242, 231, 213, 0.12);
+      color: var(--parchment-dim);
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.65rem;
+    }
+
+    .chat-tab-btn.active .chat-tab-badge {
+      background: var(--brass);
+      color: var(--void);
+      font-weight: bold;
     }
 
     .chat-bubble {
@@ -1368,9 +1546,17 @@
       </p>
 
       <div class="form-group" style="margin-bottom:24px;">
-        <input type="password" id="pinInput" placeholder="Código PIN de acceso"
-          style="text-align:center; font-family:'Space Mono', monospace; font-size:1.2rem; letter-spacing:0.2em; padding:14px;"
-          autofocus>
+        <label for="pinInput" style="display:block; font-family:'Space Mono', monospace; font-size:0.75rem; letter-spacing:0.08em; color:var(--parchment-dim); margin-bottom:8px; text-transform:uppercase;">Contraseña de acceso</label>
+        <div class="password-wrapper">
+          <input type="text" id="pinInput" placeholder="Contraseña de acceso"
+            style="text-align:center; font-family:'Space Mono', monospace; font-size:1.1rem; letter-spacing:0.15em; padding:14px 48px 14px 14px; width:100%;"
+            autofocus>
+          <button type="button" id="btnTogglePin" class="btn-toggle-pass" title="Ocultar contraseña" aria-label="Ocultar contraseña">
+            <svg id="togglePinIcon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <button type="button" class="btn-primary" style="width:100%; justify-content:center;" id="btnLoginSubmit">Acceder
@@ -1673,10 +1859,24 @@
         </header>
 
         <!-- Contenedor QR -->
-        <div id="QR" class="glass-panel" style="max-width: 480px; text-align: center; background: rgba(23, 18, 14, 0.65); margin: 0 auto 30px auto;">
-          <h3 style="font-family:'Fraunces', serif; color: var(--brass-bright); margin-bottom: 12px; font-size: 1.3rem;">Vincular WhatsApp</h3>
-          <p style="color: var(--parchment-dim); margin-bottom: 20px; font-size: 0.95rem;">Escaneá el código QR con tu celular desde la aplicación de WhatsApp para activar el bot de turnos.</p>
-          <div id="QR-canvas-wrapper"></div>
+        <div id="QR" class="glass-panel" style="max-width: 860px; margin: 0 auto 30px auto; padding: 0; overflow: hidden; background: rgba(23, 18, 14, 0.7); border: 1px solid var(--glass-border); border-radius: 16px;">
+          <div class="qr-grid-layout">
+            <!-- Columna Izquierda: Instrucciones paso a paso -->
+            <div class="qr-instructions-col">
+              <h3 class="qr-title">Vincular WhatsApp</h3>
+              <ol class="qr-steps-list">
+                <li>Abre <strong style="color: var(--parchment);">WhatsApp</strong> en tu teléfono celular.</li>
+                <li>Toca el ícono de <strong style="color: var(--parchment);">Menú</strong> o <strong style="color: var(--parchment);">Ajustes</strong> y selecciona <strong style="color: var(--parchment);">Dispositivos vinculados</strong>.</li>
+                <li>Toca el botón <strong style="color: var(--parchment);">Vincular un dispositivo</strong>.</li>
+                <li>Apunta la cámara de tu teléfono hacia esta pantalla para escanear el código QR.</li>
+              </ol>
+            </div>
+            <!-- Columna Derecha: Código QR -->
+            <div class="qr-code-col">
+              <div id="QR-canvas-wrapper"></div>
+              <p class="qr-caption">Escanea este código para iniciar sesión del chatbot en este servidor.</p>
+            </div>
+          </div>
         </div>
 
         <!-- Contenedor de Chat y Control en Split View -->
@@ -1688,8 +1888,13 @@
               Historial de Chat del Bot
             </h3>
 
+            <!-- Pestañas de chats (Todos los chats + por Cliente único) -->
+            <div class="chat-tabs-wrapper" id="chat-tabs-container">
+              <!-- Renderizado dinámico de pestañas -->
+            </div>
+
             <!-- Buscador por número de cliente -->
-            <div style="margin-bottom: 16px;">
+            <div id="chat-filter-container" style="margin-bottom: 16px;">
               <input type="text" id="chat-filter-input" placeholder="Filtrar por número de celular (ej: 549...)" style="width: 100%; font-family: 'Space Mono', monospace; font-size: 0.85rem; padding: 10px 14px; background: rgba(10, 8, 6, 0.6); color: var(--parchment); border: 1px solid var(--glass-border); border-radius: 6px; outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='var(--brass-bright)'" onblur="this.style.borderColor='var(--glass-border)'">
             </div>
 
@@ -2006,6 +2211,24 @@
     const authOverlay = document.getElementById('authOverlay');
     const adminLayout = document.getElementById('adminDashboardLayout');
     const pinInput = document.getElementById('pinInput');
+    const btnTogglePin = document.getElementById('btnTogglePin');
+    const togglePinIcon = document.getElementById('togglePinIcon');
+
+    const eyeIconPath = "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z";
+    const eyeOffIconPath = "M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.17c0-1.66-1.34-3-3-3l-.17.02z";
+
+    if (btnTogglePin) {
+      btnTogglePin.addEventListener('click', () => {
+        const isPassword = pinInput.type === 'password';
+        pinInput.type = isPassword ? 'text' : 'password';
+        btnTogglePin.setAttribute('title', isPassword ? 'Ocultar contraseña' : 'Ver contraseña');
+        btnTogglePin.setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Ver contraseña');
+        if (togglePinIcon) {
+          const path = togglePinIcon.querySelector('path');
+          if (path) path.setAttribute('d', isPassword ? eyeIconPath : eyeOffIconPath);
+        }
+      });
+    }
 
     function checkAuth() {
       if (sessionStorage.getItem('quercia_admin_logged') === 'true') {
@@ -2033,7 +2256,7 @@
         pinInput.value = '';
         checkAuth();
       } else {
-        showToast('Código PIN incorrecto. Intente nuevamente.', 'error');
+        showToast('Contraseña incorrecta. Intente nuevamente.', 'error');
         pinInput.focus();
         // Shake animation visual effect
         const card = document.querySelector('.auth-card');
@@ -2758,17 +2981,74 @@
 
     // Historial global en memoria para filtrar en tiempo real
     let fullChatHistory = [];
+    let activeChatTab = 'all';
+
+    const renderChatTabs = () => {
+      const container = document.getElementById("chat-tabs-container");
+      if (!container) return;
+
+      const uniqueClients = [];
+      fullChatHistory.forEach(msg => {
+        if (msg.numero && !uniqueClients.includes(msg.numero)) {
+          uniqueClients.push(msg.numero);
+        }
+      });
+
+      if (activeChatTab !== 'all' && !uniqueClients.includes(activeChatTab)) {
+        activeChatTab = 'all';
+      }
+
+      container.innerHTML = '';
+
+      // Pestaña "Todos los chats"
+      const allBtn = document.createElement('button');
+      allBtn.type = 'button';
+      allBtn.className = `chat-tab-btn ${activeChatTab === 'all' ? 'active' : ''}`;
+      allBtn.innerHTML = `Todos los chats <span class="chat-tab-badge">${fullChatHistory.length}</span>`;
+      allBtn.addEventListener('click', () => {
+        activeChatTab = 'all';
+        renderChatTabs();
+        renderizarHistorialFiltrado();
+      });
+      container.appendChild(allBtn);
+
+      // Pestaña por cada cliente único
+      uniqueClients.forEach(num => {
+        const clientMsgs = fullChatHistory.filter(m => m.numero === num);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `chat-tab-btn ${activeChatTab === num ? 'active' : ''}`;
+        btn.innerHTML = `📱 ${num} <span class="chat-tab-badge">${clientMsgs.length}</span>`;
+        btn.addEventListener('click', () => {
+          activeChatTab = num;
+          renderChatTabs();
+          renderizarHistorialFiltrado();
+        });
+        container.appendChild(btn);
+      });
+
+      const filterContainer = document.getElementById("chat-filter-container");
+      if (filterContainer) {
+        filterContainer.style.display = activeChatTab === 'all' ? 'block' : 'none';
+      }
+    };
 
     const renderizarHistorialFiltrado = () => {
       if (!historialdmsgs) return;
-      const filterInput = document.getElementById("chat-filter-input");
-      const filterVal = filterInput ? filterInput.value.trim().toLowerCase() : '';
       historialdmsgs.innerHTML = '';
       
-      const filtered = fullChatHistory.filter(msg => {
-        if (!filterVal) return true;
-        return msg.numero.toLowerCase().includes(filterVal);
-      });
+      let filtered = [];
+
+      if (activeChatTab === 'all') {
+        const filterInput = document.getElementById("chat-filter-input");
+        const filterVal = filterInput ? filterInput.value.trim().toLowerCase() : '';
+        filtered = fullChatHistory.filter(msg => {
+          if (!filterVal) return true;
+          return msg.numero.toLowerCase().includes(filterVal);
+        });
+      } else {
+        filtered = fullChatHistory.filter(msg => msg.numero === activeChatTab);
+      }
 
       if (filtered.length === 0) {
         historialdmsgs.innerHTML = '<div style="color: var(--parchment-dim); text-align: center; padding: 20px; font-size: 0.9rem;">No hay mensajes para mostrar.</div>';
@@ -2793,6 +3073,7 @@
     };
 
     const cargarHistorial = () => {
+      renderChatTabs();
       renderizarHistorialFiltrado();
     };
 
@@ -2887,12 +3168,14 @@
       // Cargar historial completo al conectar
       socket.on('historial_completo', (history) => {
         fullChatHistory = history;
+        renderChatTabs();
         renderizarHistorialFiltrado();
       });
 
       // Recepción de nuevos mensajes estructurados en tiempo real
       socket.on('msg_nuevo', (msgObj) => {
         fullChatHistory.push(msgObj);
+        renderChatTabs();
         renderizarHistorialFiltrado();
       });
 
@@ -2917,6 +3200,8 @@
       // Al escuchar que se cerró sesión exitosamente
       socket.on('logout_exitoso', () => {
         fullChatHistory = [];
+        activeChatTab = 'all';
+        renderChatTabs();
         renderizarHistorialFiltrado();
         showToast('Sesión de WhatsApp del chatbot terminada correctamente.');
 

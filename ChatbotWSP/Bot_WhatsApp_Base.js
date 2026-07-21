@@ -254,7 +254,7 @@ async function GenerarResp_IA(mensaje_Actu, Historial) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                "model": "tencent/hy3:free",
+                "model": "openrouter/free",
                 "messages": [
                     {
                         "role": "system",
@@ -268,7 +268,7 @@ async function GenerarResp_IA(mensaje_Actu, Historial) {
             })
         });
         const data = await respuesta.json();
-        
+
         // Log errors from OpenRouter API
         if (data.error) {
             console.error("OpenRouter API error:", data.error);
