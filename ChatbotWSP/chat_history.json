@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "sender": "cliente",
+    "numero": "115715092779249",
+    "texto": "hola wachoo",
+    "timestamp": 1784614029834
+  },
+  {
+    "sender": "bot",
+    "numero": "115715092779249",
+    "texto": "Disculpá, tuve un inconveniente técnico al procesar el mensaje.",
+    "timestamp": 1784614034041
+  }
+]
