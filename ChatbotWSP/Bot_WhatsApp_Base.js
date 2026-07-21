@@ -142,18 +142,19 @@ function iniciarWSP() {
             } catch (error) {
                 console.log("No se pudo simular 'escribiendo...' debido a actualizaciones de WhatsApp Web.");
             }
-            // Historial de chat de un usuario
-            if (!historialesIA[clientNumber]) {
-                historialesIA[clientNumber] = '';
-            }
+            // Obtener el historial de chat persistente filtrado para este usuario
+            const mensajesFiltrados = chatHistory.filter(h => h.numero === clientNumber);
+            // Tomamos los últimos 15 mensajes para no saturar el contexto de la IA
+            const ultimosMensajes = mensajesFiltrados.slice(-15);
+            const historialTexto = ultimosMensajes
+                .map(h => `${h.sender === 'bot' ? 'Respuesta Chatbot' : 'Mensaje Usuario'}: ${h.texto}`)
+                .join('\n');
 
-            historialesIA[clientNumber] += `Mensaje Usuario: ${msg.body}\n`
+            historialesIA[clientNumber] = historialTexto;
 
             console.log(`[IA] Generando respuesta para ${clientNumber}...`);
-            const mens_resp = await GenerarResp_IA(msg, historialesIA[clientNumber]);
+            const mens_resp = await GenerarResp_IA(msg, historialTexto);
             console.log(`[IA] Respuesta generada: "${mens_resp}"`);
-
-            historialesIA[clientNumber] += `Respuesta Chatbot: ${mens_resp}\n`
 
             setTimeout(() => {
                 msg.reply(mens_resp);
@@ -161,7 +162,7 @@ function iniciarWSP() {
             }, calcularDelay(mens_resp));
 
             if (msg.body.toLowerCase() === 'hola') {
-                await msg.reply('Buenas, Ahora Estoy usando un bot automatizado con IA');
+                await msg.reply('Buenas!. Soy Camila la asistente virtual de Quercia Barber Studio');
             }
         } catch (error) {
             console.error("Error crítico en el manejador de mensajes:", error);
@@ -243,9 +244,11 @@ function calcularDelay(texto_resp) {
 
 async function GenerarResp_IA(mensaje_Actu, Historial) {
     // Restriccion para la respuesta
-    const Restriccion = `Quiero que tomes en cuenta el siguiente contexto para responder ${Historial}
-    junto con las siguientes Restricciones ${ReglasRespActuales}
-    Responde de manera respetuosa y humana`;
+    const Restriccion = `Quiero que tomes en cuenta el siguiente contexto de la conversación para responder:
+    ${Historial}
+    junto con las siguientes Restricciones:
+    ${ReglasRespActuales}
+    Responde de manera respetuosa y humana. Queda terminantemente prohibido responder preguntas o hablar de temas que estén fuera del rubro de las restricciones indicadas. Si el usuario pregunta algo ajeno a este rubro, NO respondas a su pregunta bajo ningún concepto; en su lugar, limítate única y exclusivamente a pedirle de manera amable que retome la conversación acerca del rubro del negocio.`;
     // realizar la peticion
     try {
         const interaction = await ai.interactions.create({

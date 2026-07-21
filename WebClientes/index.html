@@ -1,1160 +1,1767 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quercia Studio Barber — Reservá tu turno</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --void: #0a0806;
-    --panel: rgba(26, 20, 16, 0.45);
-    --panel-solid: #17120e;
-    --leather: #1e150f;
-    --leather-light: #2c1f15;
-    --parchment: #f2e7d5;
-    --parchment-dim: #bdae95;
-    --brass: #c5a059;
-    --brass-bright: #e5c17d;
-    --brass-dark: #8c6a32;
-    --burgundy: #5a141a;
-    --line: rgba(242, 231, 213, 0.09);
-    --shadow: 0 30px 60px rgba(0, 0, 0, 0.65);
-    
-    /* Glassmorphism system */
-    --glass-bg: rgba(24, 18, 14, 0.6);
-    --glass-bg-hover: rgba(36, 28, 22, 0.7);
-    --glass-border: rgba(229, 193, 125, 0.12);
-    --glass-border-active: rgba(229, 193, 125, 0.35);
-    --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.55);
-  }
-  
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--void);
-    color: var(--parchment);
-    font-family: 'Spectral', serif;
-    line-height: 1.6;
-    overflow-x: hidden;
-    background-image: 
-      radial-gradient(circle at 10% 20%, rgba(26, 20, 16, 0.8) 0%, transparent 60%),
-      radial-gradient(circle at 90% 80%, rgba(90, 20, 26, 0.05) 0%, transparent 50%);
-  }
-  ::selection { background: var(--brass); color: var(--void); }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quercia Studio Barber — Reservá tu turno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --void: #0a0806;
+      --panel: rgba(26, 20, 16, 0.45);
+      --panel-solid: #17120e;
+      --leather: #1e150f;
+      --leather-light: #2c1f15;
+      --parchment: #f2e7d5;
+      --parchment-dim: #bdae95;
+      --brass: #c5a059;
+      --brass-bright: #e5c17d;
+      --brass-dark: #8c6a32;
+      --burgundy: #5a141a;
+      --line: rgba(242, 231, 213, 0.09);
+      --shadow: 0 30px 60px rgba(0, 0, 0, 0.65);
 
-  h1, h2, h3, .display {
-    font-family: 'Fraunces', serif;
-    font-weight: 700;
-    letter-spacing: -0.015em;
-  }
-  .mono {
-    font-family: 'Space Mono', monospace;
-    letter-spacing: 0.06em;
-  }
-  a { color: inherit; text-decoration: none; }
-  img { max-width: 100%; display: block; }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
-  section { position: relative; }
-
-  /* barber pole accent — the signature element, used sparingly */
-  .pole {
-    width: 8px;
-    border-radius: 6px;
-    background: repeating-linear-gradient(
-      -45deg,
-      var(--burgundy) 0 14px,
-      var(--parchment) 14px 28px,
-      var(--brass) 28px 42px
-    );
-    background-size: 100% 300%;
-    animation: pole-spin 8s linear infinite;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.45);
-  }
-  @keyframes pole-spin {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 120px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .pole { animation: none; }
-  }
-
-  /* ---------- GLASS EFFECTS ---------- */
-  .glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px) saturate(120%);
-    -webkit-backdrop-filter: blur(16px) saturate(120%);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-glow);
-    border-radius: 12px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-  }
-  .glass-panel:hover {
-    border-color: var(--glass-border-active);
-    background: var(--glass-bg-hover);
-  }
-
-  /* ---------- NAV ---------- */
-  header {
-    position: sticky; top: 0; z-index: 50;
-    background: rgba(10, 8, 6, 0.75);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--line);
-    transition: all 0.3s ease;
-  }
-  nav {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 28px;
-    max-width: 1180px; margin: 0 auto;
-  }
-  .brand { display: flex; align-items: center; gap: 14px; }
-  .brand .logo-img {
-    height: 38px;
-    width: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 0 4px rgba(197, 160, 89, 0.3));
-  }
-  .brand-name { 
-    font-size: 1.1rem; 
-    letter-spacing: 0.08em; 
-    text-transform: uppercase; 
-    font-weight: 600; 
-    font-family: 'Fraunces', serif;
-  }
-  .brand-name span { color: var(--brass-bright); font-weight: 400; font-style: italic; }
-  .nav-links { display: flex; gap: 32px; font-size: 0.9rem; font-family: 'Space Mono', monospace; }
-  .nav-links a { opacity: 0.75; transition: opacity .2s, color .2s; }
-  .nav-links a:hover { opacity: 1; color: var(--brass-bright); }
-  .nav-cta {
-    background: var(--brass); color: var(--void); padding: 10px 22px;
-    border-radius: 4px; font-size: 0.8rem; font-weight: 700;
-    letter-spacing: 0.05em; text-transform: uppercase;
-    transition: background .2s, transform .2s, box-shadow .2s;
-    font-family: 'Space Mono', monospace;
-    border: 1px solid var(--brass-bright);
-  }
-  .nav-cta:hover { 
-    background: var(--brass-bright); 
-    transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(197, 160, 89, 0.25);
-  }
-  .burger {
-    display: none;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 28px;
-    height: 20px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    z-index: 100;
-  }
-  .burger span {
-    width: 100%;
-    height: 2px;
-    background-color: var(--parchment);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .burger.open span:nth-child(1) {
-    transform: translateY(9px) rotate(45deg);
-    background-color: var(--brass-bright);
-  }
-  .burger.open span:nth-child(2) {
-    opacity: 0;
-  }
-  .burger.open span:nth-child(3) {
-    transform: translateY(-9px) rotate(-45deg);
-    background-color: var(--brass-bright);
-  }
-
-  /* ---------- HERO ---------- */
-  .hero {
-    padding: 130px 28px 110px;
-    background:
-      radial-gradient(ellipse at 20% 30%, rgba(197, 160, 89, 0.12), transparent 50%),
-      radial-gradient(ellipse at 80% 70%, rgba(90, 20, 26, 0.12), transparent 50%),
-      var(--void);
-    text-align: center;
-  }
-  .rating-line {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-family: 'Space Mono', monospace; font-size: 0.8rem;
-    color: var(--parchment-dim); letter-spacing: 0.1em;
-    border: 1px solid var(--glass-border); padding: 8px 20px; border-radius: 100px;
-    margin-bottom: 38px;
-    background: rgba(23, 18, 14, 0.4);
-    backdrop-filter: blur(8px);
-  }
-  .stars { color: var(--brass-bright); letter-spacing: 2px; }
-  .hero .display {
-    font-size: clamp(3.2rem, 9vw, 6.8rem);
-    line-height: 0.95;
-    text-transform: uppercase;
-    color: var(--parchment);
-    margin-bottom: 10px;
-  }
-  .hero .display em {
-    font-style: italic; font-weight: 500; color: var(--brass-bright);
-    font-family: 'Fraunces', serif;
-  }
-  .hero-sub {
-    font-family: 'Space Mono', monospace; font-size: 0.82rem;
-    letter-spacing: 0.4em; text-transform: uppercase;
-    color: var(--brass); margin-top: 18px;
-  }
-  .hero-copy {
-    max-width: 580px; margin: 34px auto 44px; font-size: 1.15rem;
-    color: var(--parchment-dim);
-    font-weight: 400;
-  }
-  .hero-ctas { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-  .btn-primary, .btn-ghost {
-    padding: 16px 34px; font-size: 0.85rem; letter-spacing: 0.08em;
-    text-transform: uppercase; font-weight: 700; border-radius: 4px;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    font-family: 'Space Mono', monospace;
-    cursor: pointer;
-  }
-  .btn-primary { 
-    background: var(--brass); 
-    color: var(--void);
-    border: 1px solid var(--brass-bright);
-  }
-  .btn-primary:hover { 
-    background: var(--brass-bright); 
-    transform: translateY(-2px); 
-    box-shadow: 0 12px 24px rgba(197, 160, 89, 0.2); 
-  }
-  .btn-ghost { 
-    border: 1px solid var(--parchment-dim); 
-    color: var(--parchment); 
-    background: rgba(242, 231, 213, 0.03);
-    backdrop-filter: blur(8px);
-  }
-  .btn-ghost:hover { 
-    border-color: var(--brass-bright); 
-    color: var(--brass-bright);
-    background: rgba(197, 160, 89, 0.05);
-    transform: translateY(-2px);
-  }
-
-  .hero-meta {
-    margin-top: 70px; display: flex; justify-content: center; gap: 70px;
-    flex-wrap: wrap; font-family: 'Space Mono', monospace; font-size: 0.8rem;
-    color: var(--parchment-dim);
-  }
-  .hero-meta strong { display: block; color: var(--parchment); font-size: 1.05rem; margin-bottom: 6px; }
-
-  /* ---------- SECTION HEADERS ---------- */
-  .section-head {
-    display: flex; align-items: flex-end; gap: 24px; margin-bottom: 56px;
-  }
-  .section-head .pole { height: 58px; flex-shrink: 0; }
-  .section-eyebrow {
-    font-family: 'Space Mono', monospace; font-size: 0.78rem;
-    letter-spacing: 0.3em; text-transform: uppercase; color: var(--brass);
-    display: block; margin-bottom: 12px;
-  }
-  .section-head h2 { 
-    font-size: clamp(2.2rem, 4vw, 3rem); 
-    color: var(--parchment);
-    line-height: 1.1;
-  }
-
-  #servicios, #barberos, #reseñas { padding: 120px 0; }
-  #servicios { background: #130f0c; }
-
-  /* ---------- SERVICE TICKETS (GLASSMOPHISM) ---------- */
-  .tickets {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 30px;
-  }
-  .ticket {
-    background: rgba(28, 20, 15, 0.55);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 12px;
-    position: relative;
-    padding: 32px 30px 28px;
-    box-shadow: var(--shadow);
-    display: flex; flex-direction: column; gap: 16px;
-    border: 1px solid var(--glass-border);
-    transition: all 0.3s ease;
-  }
-  .ticket:hover {
-    border-color: var(--glass-border-active);
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-  }
-  .ticket::before {
-    content: "";
-    position: absolute; left: 0; right: 0; bottom: 78px;
-    border-top: 1.5px dashed rgba(242, 231, 213, 0.15);
-  }
-  .ticket::after {
-    content: "";
-    position: absolute; left: -10px; bottom: 69px; width: 20px; height: 20px;
-    background: #130f0c; border-radius: 50%;
-    border-right: 1px solid var(--glass-border);
-  }
-  .ticket .notch-r {
-    position: absolute; right: -10px; bottom: 69px; width: 20px; height: 20px;
-    background: #130f0c; border-radius: 50%;
-    border-left: 1px solid var(--glass-border);
-  }
-  .ticket h3 { 
-    font-size: 1.35rem; 
-    color: var(--parchment); 
-    text-transform: uppercase; 
-    letter-spacing: 0.03em; 
-  }
-  .ticket p { font-size: 0.95rem; color: var(--parchment-dim); flex-grow: 1; line-height: 1.5; }
-  .ticket-foot {
-    display: flex; align-items: center; justify-content: space-between;
-    padding-top: 20px;
-  }
-  .ticket-meta { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--parchment-dim); }
-  .ticket-price { font-family: 'Space Mono', monospace; font-size: 1.2rem; color: var(--brass-bright); font-weight: 700; }
-  .ticket-btn {
-    margin-top: 8px; text-align: center; padding: 12px; 
-    border: 1px solid var(--brass);
-    color: var(--brass-bright); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;
-    border-radius: 4px; transition: all .2s; cursor: pointer; 
-    font-family: 'Space Mono', monospace; background: transparent; width: 100%;
-    font-weight: 700;
-  }
-  .ticket-btn:hover { background: var(--brass); color: var(--void); }
-
-  /* ---------- BARBEROS (PROFESSIONAL TEAM CARDS) ---------- */
-  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 36px; }
-  
-  .barber-card {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-  }
-  .barber-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--glass-border-active);
-    box-shadow: 0 30px 60px rgba(197, 160, 89, 0.06), var(--shadow);
-  }
-  
-  .barber-img-wrap {
-    width: 100%;
-    height: 380px;
-    overflow: hidden;
-    position: relative;
-    background: var(--panel-solid);
-  }
-  .barber-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .barber-card:hover .barber-img-wrap img {
-    transform: scale(1.04);
-  }
-  /* Elegant gradient mask fading image into the card content */
-  .barber-img-wrap::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 50%;
-    background: linear-gradient(to top, rgba(16, 12, 9, 1), transparent);
-  }
-  
-  .barber-info {
-    padding: 28px 30px;
-    background: rgba(16, 12, 9, 0.95);
-    flex-grow: 1;
-    position: relative;
-  }
-  .barber-card .initials {
-    font-family: 'Fraunces', serif; font-size: 5rem; font-weight: 700;
-    color: rgba(197, 160, 89, 0.05); position: absolute; bottom: 10px; right: 20px; line-height: 1;
-    pointer-events: none;
-  }
-  .barber-info h3 { font-size: 1.6rem; margin-bottom: 6px; color: var(--parchment); }
-  .barber-role { 
-    font-family: 'Space Mono', monospace; font-size: 0.78rem; 
-    color: var(--brass-bright); letter-spacing: 0.12em; text-transform: uppercase; 
-  }
-  .barber-desc { margin-top: 14px; color: var(--parchment-dim); font-size: 0.98rem; line-height: 1.6; }
-
-  /* ---------- RESERVAR (LIQUID GLASS BOOKING GRID) ---------- */
-  #reservar {
-    padding: 120px 0;
-    background: linear-gradient(180deg, var(--void) 0%, #150f0b 50%, var(--void) 100%);
-  }
-  .booking-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    max-width: 680px;
-    margin: 0 auto;
-  }
-  
-  /* Ticket Stub summary card */
-  .stub {
-    background: linear-gradient(135deg, var(--leather), rgba(23, 18, 14, 0.92));
-    border-radius: 12px; 
-    padding: 38px 32px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--glass-border);
-    overflow: hidden;
-    display: none;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .stub.show {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-    animation: fadeInUp 0.5s ease forwards;
-  }
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  /* Top receipt pattern */
-  .stub::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    background: repeating-linear-gradient(90deg, var(--brass) 0, var(--brass) 12px, transparent 12px, transparent 24px);
-  }
-  .stub-label { 
-    font-family: 'Space Mono', monospace; 
-    font-size: 0.72rem; 
-    letter-spacing: 0.22em; 
-    text-transform: uppercase; 
-    color: var(--brass); 
-  }
-  .stub h3 { font-size: 1.7rem; margin: 12px 0 26px; font-weight: 600; letter-spacing: -0.01em; }
-  .stub-row { 
-    display: flex; justify-content: space-between; 
-    padding: 14px 0; 
-    border-top: 1px dashed rgba(242, 231, 213, 0.14); 
-    font-size: 0.96rem; 
-  }
-  .stub-row span:first-child { color: var(--parchment-dim); }
-  .stub-row span:last-child { color: var(--parchment); font-weight: 600; text-align: right; }
-  .stub-total { 
-    border-top: 2px solid var(--brass); 
-    margin-top: 8px; padding-top: 18px; 
-    display: flex; justify-content: space-between; 
-    font-family: 'Space Mono', monospace; 
-    align-items: center;
-  }
-  .stub-total span:first-child { text-transform: uppercase; font-size: 0.85rem; color: var(--brass); }
-  .stub-total span:last-child { color: var(--brass-bright); font-size: 1.45rem; font-weight: 700; }
-
-  /* Booking Form */
-  .form-card {
-    background: rgba(23, 18, 14, 0.45);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 12px; 
-    padding: 44px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow);
-  }
-  .field { margin-bottom: 26px; }
-  .field label {
-    display: block; font-family: 'Space Mono', monospace; font-size: 0.75rem;
-    text-transform: uppercase; letter-spacing: 0.15em; color: var(--parchment-dim); margin-bottom: 10px;
-  }
-  
-  select, input[type=text], input[type=tel] {
-    width: 100%; 
-    background: rgba(10, 8, 6, 0.6); 
-    border: 1px solid var(--glass-border); 
-    color: var(--parchment);
-    padding: 14px 16px; 
-    border-radius: 6px; 
-    font-family: 'Spectral', serif; 
-    font-size: 1rem;
-    transition: all 0.3s ease;
-  }
-  select:focus, input:focus {
-    outline: none;
-    border-color: var(--brass-bright);
-    background: rgba(10, 8, 6, 0.8);
-    box-shadow: 0 0 10px rgba(197, 160, 89, 0.15);
-  }
-  
-  /* Select styling reset */
-  select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e5c17d' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 40px;
-  }
-
-  /* Barber Buttons with Pictures */
-  .barber-pick { display: flex; gap: 16px; flex-wrap: wrap; }
-  .pick-btn {
-    flex: 1; 
-    min-width: 160px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px; 
-    border: 1px solid var(--glass-border); 
-    border-radius: 8px;
-    cursor: pointer; 
-    font-size: 0.95rem; 
-    background: rgba(10, 8, 6, 0.4); 
-    color: var(--parchment); 
-    font-family: inherit;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .pick-btn img {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid var(--glass-border);
-    transition: border-color 0.3s ease;
-  }
-  .pick-btn.active, .pick-btn:hover { 
-    border-color: var(--brass); 
-    color: var(--brass-bright); 
-    background: rgba(197, 160, 89, 0.08); 
-    box-shadow: 0 4px 12px rgba(197, 160, 89, 0.06);
-  }
-  .pick-btn.active img {
-    border-color: var(--brass-bright);
-    filter: drop-shadow(0 0 3px rgba(229, 193, 125, 0.3));
-  }
-
-  /* LIQUID GLASS CALENDAR WIDGET */
-  .calendar-widget {
-    padding: 22px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    background: rgba(10, 8, 6, 0.5);
-    border: 1px solid var(--glass-border);
-    border-radius: 10px;
-  }
-  .calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
-  }
-  .cal-month-year {
-    font-family: 'Fraunces', serif;
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: var(--brass-bright);
-    letter-spacing: 0.02em;
-    text-transform: capitalize;
-  }
-  .cal-nav-btn {
-    background: rgba(229, 193, 125, 0.05);
-    border: 1px solid var(--glass-border);
-    color: var(--parchment);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    font-family: monospace;
-    font-size: 1.1rem;
-    font-weight: 700;
-  }
-  .cal-nav-btn:hover {
-    background: var(--brass);
-    color: var(--void);
-    border-color: var(--brass-bright);
-  }
-  .calendar-weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--brass-bright);
-    opacity: 0.8;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-  }
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-  }
-  .cal-day {
-    aspect-ratio: 1.05;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.85rem;
-    border-radius: 6px;
-    cursor: pointer;
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--parchment);
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .cal-day:hover:not(.disabled) {
-    background: rgba(229, 193, 125, 0.12);
-    border-color: var(--brass-bright);
-    color: var(--brass-bright);
-  }
-  .cal-day.active {
-    background: var(--brass);
-    border-color: var(--brass-bright);
-    color: var(--void);
-    font-weight: 700;
-    box-shadow: 0 0 12px rgba(197, 160, 89, 0.3);
-    transform: scale(1.05);
-  }
-  .cal-day.disabled {
-    opacity: 0.2;
-    cursor: not-allowed;
-    text-decoration: line-through;
-  }
-  .cal-day.today {
-    border-color: var(--brass-bright);
-    font-weight: bold;
-    color: var(--brass-bright);
-  }
-
-  /* Time slot grid */
-  .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(82px, 1fr)); gap: 10px; }
-  .slot {
-    padding: 12px 6px; text-align: center; 
-    border: 1px solid var(--glass-border); 
-    border-radius: 6px;
-    font-family: 'Space Mono', monospace; font-size: 0.85rem; cursor: pointer; 
-    background: rgba(10, 8, 6, 0.4);
-    color: var(--parchment); transition: all 0.2s ease;
-  }
-  .slot.active, .slot:hover { 
-    border-color: var(--brass); 
-    color: var(--brass-bright); 
-    background: rgba(197, 160, 89, 0.08); 
-    box-shadow: 0 0 8px rgba(197, 160, 89, 0.1);
-  }
-  .slot-empty { font-size: 0.88rem; color: var(--parchment-dim); font-style: italic; grid-column: 1/-1; line-height: 1.5; }
-  .submit-row { margin-top: 36px; }
-  .hint { font-size: 0.82rem; color: var(--parchment-dim); margin-top: 12px; line-height: 1.4; }
-
-  /* ---------- RESEÑAS ---------- */
-  .review-top { display: flex; align-items: center; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
-  .review-score { font-family: 'Fraunces', serif; font-size: 3.6rem; font-weight: 700; color: var(--brass-bright); }
-  .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
-  .review-card {
-    background: var(--glass-bg); 
-    border: 1px solid var(--glass-border); 
-    border-radius: 8px; padding: 28px;
-    box-shadow: var(--glass-glow);
-    transition: transform 0.3s ease;
-  }
-  .review-card:hover {
-    transform: translateY(-4px);
-  }
-  .review-quote { font-size: 1.1rem; font-style: italic; color: var(--parchment); margin-bottom: 18px; line-height: 1.5; }
-  .review-who { font-family: 'Space Mono', monospace; font-size: 0.78rem; color: var(--brass); text-transform: uppercase; letter-spacing: 0.05em; }
-
-  /* ---------- HORARIOS / UBICACION ---------- */
-  #info { padding: 120px 0; background: #130f0c; }
-  .info-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 60px; }
-  table { width: 100%; border-collapse: collapse; }
-  table td { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 1rem; }
-  table td:last-child { text-align: right; font-family: 'Space Mono', monospace; color: var(--brass-bright); }
-  .addr-box { 
-    background: rgba(28, 20, 15, 0.55); 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px; padding: 30px; 
-  }
-  .addr-box p { margin-bottom: 18px; color: var(--parchment-dim); line-height: 1.5; }
-  .wa-btn {
-    display: inline-flex; align-items: center; gap: 12px; background: #25D366; color: #0b1a10;
-    padding: 14px 24px; border-radius: 4px; font-weight: 700; font-size: 0.92rem; margin-top: 10px;
-    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
-    transition: all 0.2s ease;
-  }
-  .wa-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
-    background: #20ba56;
-  }
-
-  footer {
-    padding: 60px 28px 40px; text-align: center; border-top: 1px solid var(--line); background: var(--void);
-  }
-  footer .brand-name { justify-content: center; margin-bottom: 16px; display: flex; }
-  footer .logo-img { height: 32px; width: auto; margin-right: 12px; }
-  .foot-note { font-size: 0.85rem; color: var(--parchment-dim); margin-top: 18px; }
-
-  /* toast for mock confirmation */
-  .toast {
-    position: fixed; bottom: 26px; left: 50%; transform: translate(-50%, 30px);
-    background: var(--leather); border: 1px solid var(--brass); color: var(--parchment);
-    padding: 18px 28px; border-radius: 8px; box-shadow: var(--shadow); max-width: 90vw;
-    opacity: 0; pointer-events: none; transition: all .35s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; font-size: 0.95rem;
-  }
-  .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-  .toast a { color: var(--brass-bright); font-weight: 700; text-decoration: underline; }
-
-  .menu-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100vh;
-    background: rgba(10, 8, 6, 0.45);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    z-index: 44;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .menu-overlay.open {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .mobile-menu {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 40vh;
-    min-height: 290px;
-    background: rgba(16, 12, 9, 0.96);
-    border-bottom: 1px solid var(--glass-border-active);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.75);
-    z-index: 45;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    transform: translateY(-100%);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .mobile-menu.open {
-    transform: translateY(0);
-  }
-  .mobile-menu a {
-    font-family: 'Fraunces', serif;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--parchment);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.35s ease, transform 0.35s ease, color 0.3s ease;
-  }
-  .mobile-menu a:hover {
-    color: var(--brass-bright);
-  }
-  .mobile-menu .nav-cta {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.85rem;
-    padding: 8px 24px;
-  }
-
-  /* Staggered text animations for menu items when open */
-  .mobile-menu.open a {
-    opacity: 0.85;
-    transform: translateY(0);
-  }
-  .mobile-menu.open a:hover {
-    opacity: 1;
-  }
-  .mobile-menu.open a:nth-child(1) { transition-delay: 0.08s; }
-  .mobile-menu.open a:nth-child(2) { transition-delay: 0.14s; }
-  .mobile-menu.open a:nth-child(3) { transition-delay: 0.20s; }
-  .mobile-menu.open a:nth-child(4) { transition-delay: 0.26s; }
-  .mobile-menu.open a:nth-child(5) { transition-delay: 0.32s; }
-  .mobile-menu.open a:nth-child(6) { transition-delay: 0.38s; }
-
-  body.menu-open {
-    overflow: hidden;
-  }
-
-  /* Reviews Layout */
-  .reviews-layout {
-    display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: 50px;
-    align-items: start;
-  }
-  .reviews-list-col {
-    display: flex;
-    flex-direction: column;
-  }
-  .star-rating {
-    display: flex;
-    gap: 8px;
-    margin-top: 5px;
-  }
-  .star-btn {
-    background: transparent;
-    border: none;
-    color: rgba(242, 231, 213, 0.15);
-    font-size: 1.8rem;
-    cursor: pointer;
-    transition: color 0.2s ease, transform 0.1s ease;
-  }
-  .star-btn:hover {
-    transform: scale(1.15);
-  }
-  .star-btn.active {
-    color: var(--brass-bright);
-    text-shadow: 0 0 10px rgba(229, 193, 125, 0.4);
-  }
-  textarea:focus {
-    outline: none;
-    border-color: var(--brass-bright);
-    background: rgba(10, 8, 6, 0.8);
-    box-shadow: 0 0 10px rgba(197, 160, 89, 0.15);
-  }
-
-  @media (max-width: 960px) {
-    .booking-grid { grid-template-columns: 1fr; gap: 40px; }
-    .info-grid { grid-template-columns: 1fr; gap: 40px; }
-    .stub { position: static; }
-    .reviews-layout {
-      grid-template-columns: 1fr;
-      gap: 40px;
+      /* Glassmorphism system */
+      --glass-bg: rgba(24, 18, 14, 0.6);
+      --glass-bg-hover: rgba(36, 28, 22, 0.7);
+      --glass-border: rgba(229, 193, 125, 0.12);
+      --glass-border-active: rgba(229, 193, 125, 0.35);
+      --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.55);
     }
-  }
-  @media (max-width: 800px) {
-    .nav-links, header nav .nav-cta { display: none !important; }
-    .burger { display: flex; }
-  }
-</style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--void);
+      color: var(--parchment);
+      font-family: 'Spectral', serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(26, 20, 16, 0.8) 0%, transparent 60%),
+        radial-gradient(circle at 90% 80%, rgba(90, 20, 26, 0.05) 0%, transparent 50%);
+    }
+
+    ::selection {
+      background: var(--brass);
+      color: var(--void);
+    }
+
+    h1,
+    h2,
+    h3,
+    .display {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+    }
+
+    .mono {
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.06em;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    section {
+      position: relative;
+    }
+
+    /* barber pole accent — the signature element, used sparingly */
+    .pole {
+      width: 8px;
+      border-radius: 6px;
+      background: repeating-linear-gradient(-45deg,
+          var(--burgundy) 0 14px,
+          var(--parchment) 14px 28px,
+          var(--brass) 28px 42px);
+      background-size: 100% 300%;
+      animation: pole-spin 8s linear infinite;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.45);
+    }
+
+    @keyframes pole-spin {
+      0% {
+        background-position: 0 0;
+      }
+
+      100% {
+        background-position: 0 120px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pole {
+        animation: none;
+      }
+    }
+
+    /* ---------- GLASS EFFECTS ---------- */
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px) saturate(120%);
+      -webkit-backdrop-filter: blur(16px) saturate(120%);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-glow);
+      border-radius: 12px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+    .glass-panel:hover {
+      border-color: var(--glass-border-active);
+      background: var(--glass-bg-hover);
+    }
+
+    /* ---------- NAV ---------- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(10, 8, 6, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--line);
+      transition: all 0.3s ease;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand .logo-img {
+      height: 48px;
+      width: 48px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 1.5px solid rgba(197, 160, 89, 0.45);
+      box-shadow: 0 0 12px rgba(197, 160, 89, 0.25);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .brand .logo-img:hover {
+      transform: scale(1.05) rotate(5deg);
+      border-color: var(--brass-bright);
+      box-shadow: 0 0 20px rgba(197, 160, 89, 0.5);
+    }
+
+    .brand-name {
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-family: 'Fraunces', serif;
+    }
+
+    .brand-name span {
+      color: var(--brass-bright);
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      font-size: 0.9rem;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .nav-links a {
+      opacity: 0.75;
+      transition: opacity .2s, color .2s;
+    }
+
+    .nav-links a:hover {
+      opacity: 1;
+      color: var(--brass-bright);
+    }
+
+    .nav-cta {
+      background: var(--brass);
+      color: var(--void);
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: background .2s, transform .2s, box-shadow .2s;
+      font-family: 'Space Mono', monospace;
+      border: 1px solid var(--brass-bright);
+    }
+
+    .nav-cta:hover {
+      background: var(--brass-bright);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(197, 160, 89, 0.25);
+    }
+
+    .burger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 28px;
+      height: 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    .burger span {
+      width: 100%;
+      height: 2px;
+      background-color: var(--parchment);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .burger.open span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+      background-color: var(--brass-bright);
+    }
+
+    .burger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .burger.open span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+      background-color: var(--brass-bright);
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      padding: 130px 28px 110px;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(197, 160, 89, 0.12), transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(90, 20, 26, 0.12), transparent 50%),
+        var(--void);
+      text-align: center;
+    }
+
+    .rating-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--parchment-dim);
+      letter-spacing: 0.1em;
+      border: 1px solid var(--glass-border);
+      padding: 8px 20px;
+      border-radius: 100px;
+      margin-bottom: 38px;
+      background: rgba(23, 18, 14, 0.4);
+      backdrop-filter: blur(8px);
+    }
+
+    .stars {
+      color: var(--brass-bright);
+      letter-spacing: 2px;
+    }
+
+    .hero .display {
+      font-size: clamp(3.2rem, 9vw, 6.8rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      color: var(--parchment);
+      margin-bottom: 10px;
+    }
+
+    .hero .display em {
+      font-style: italic;
+      font-weight: 500;
+      color: var(--brass-bright);
+      font-family: 'Fraunces', serif;
+    }
+
+    .hero-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--brass);
+      margin-top: 18px;
+    }
+
+    .hero-copy {
+      max-width: 580px;
+      margin: 34px auto 44px;
+      font-size: 1.15rem;
+      color: var(--parchment-dim);
+      font-weight: 400;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary,
+    .btn-ghost {
+      padding: 16px 34px;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      border-radius: 4px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: 'Space Mono', monospace;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--brass);
+      color: var(--void);
+      border: 1px solid var(--brass-bright);
+    }
+
+    .btn-primary:hover {
+      background: var(--brass-bright);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(197, 160, 89, 0.2);
+    }
+
+    .btn-ghost {
+      border: 1px solid var(--parchment-dim);
+      color: var(--parchment);
+      background: rgba(242, 231, 213, 0.03);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--brass-bright);
+      color: var(--brass-bright);
+      background: rgba(197, 160, 89, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .hero-meta {
+      margin-top: 70px;
+      display: flex;
+      justify-content: center;
+      gap: 70px;
+      flex-wrap: wrap;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--parchment-dim);
+    }
+
+    .hero-meta strong {
+      display: block;
+      color: var(--parchment);
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    /* ---------- SECTION HEADERS ---------- */
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 56px;
+    }
+
+    .section-head .pole {
+      height: 58px;
+      flex-shrink: 0;
+    }
+
+    .section-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--brass);
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      color: var(--parchment);
+      line-height: 1.1;
+    }
+
+    #servicios,
+    #barberos,
+    #reseñas {
+      padding: 120px 0;
+    }
+
+    #servicios {
+      background: #130f0c;
+    }
+
+    /* ---------- SERVICE TICKETS (GLASSMOPHISM) ---------- */
+    .tickets {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+    }
+
+    .ticket {
+      background: rgba(28, 20, 15, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 12px;
+      position: relative;
+      padding: 32px 30px 28px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      border: 1px solid var(--glass-border);
+      transition: all 0.3s ease;
+    }
+
+    .ticket:hover {
+      border-color: var(--glass-border-active);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .ticket::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 78px;
+      border-top: 1.5px dashed rgba(242, 231, 213, 0.15);
+    }
+
+    .ticket::after {
+      content: "";
+      position: absolute;
+      left: -10px;
+      bottom: 69px;
+      width: 20px;
+      height: 20px;
+      background: #130f0c;
+      border-radius: 50%;
+      border-right: 1px solid var(--glass-border);
+    }
+
+    .ticket .notch-r {
+      position: absolute;
+      right: -10px;
+      bottom: 69px;
+      width: 20px;
+      height: 20px;
+      background: #130f0c;
+      border-radius: 50%;
+      border-left: 1px solid var(--glass-border);
+    }
+
+    .ticket h3 {
+      font-size: 1.35rem;
+      color: var(--parchment);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .ticket p {
+      font-size: 0.95rem;
+      color: var(--parchment-dim);
+      flex-grow: 1;
+      line-height: 1.5;
+    }
+
+    .ticket-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 20px;
+    }
+
+    .ticket-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--parchment-dim);
+    }
+
+    .ticket-price {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.2rem;
+      color: var(--brass-bright);
+      font-weight: 700;
+    }
+
+    .ticket-btn {
+      margin-top: 8px;
+      text-align: center;
+      padding: 12px;
+      border: 1px solid var(--brass);
+      color: var(--brass-bright);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      transition: all .2s;
+      cursor: pointer;
+      font-family: 'Space Mono', monospace;
+      background: transparent;
+      width: 100%;
+      font-weight: 700;
+    }
+
+    .ticket-btn:hover {
+      background: var(--brass);
+      color: var(--void);
+    }
+
+    /* ---------- BARBEROS (PROFESSIONAL TEAM CARDS) ---------- */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 36px;
+    }
+
+    .barber-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .barber-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--glass-border-active);
+      box-shadow: 0 30px 60px rgba(197, 160, 89, 0.06), var(--shadow);
+    }
+
+    .barber-img-wrap {
+      width: 100%;
+      height: 380px;
+      overflow: hidden;
+      position: relative;
+      background: var(--panel-solid);
+    }
+
+    .barber-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .barber-card:hover .barber-img-wrap img {
+      transform: scale(1.04);
+    }
+
+    /* Elegant gradient mask fading image into the card content */
+    .barber-img-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(to top, rgba(16, 12, 9, 1), transparent);
+    }
+
+    .barber-info {
+      padding: 28px 30px;
+      background: rgba(16, 12, 9, 0.95);
+      flex-grow: 1;
+      position: relative;
+    }
+
+    .barber-card .initials {
+      font-family: 'Fraunces', serif;
+      font-size: 5rem;
+      font-weight: 700;
+      color: rgba(197, 160, 89, 0.05);
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .barber-info h3 {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      color: var(--parchment);
+    }
+
+    .barber-role {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--brass-bright);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .barber-desc {
+      margin-top: 14px;
+      color: var(--parchment-dim);
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    /* ---------- RESERVAR (LIQUID GLASS BOOKING GRID) ---------- */
+    #reservar {
+      padding: 120px 0;
+      background: linear-gradient(180deg, var(--void) 0%, #150f0b 50%, var(--void) 100%);
+    }
+
+    .booking-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Ticket Stub summary card */
+    .stub {
+      background: linear-gradient(135deg, var(--leather), rgba(23, 18, 14, 0.92));
+      border-radius: 12px;
+      padding: 38px 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--glass-border);
+      overflow: hidden;
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .stub.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Top receipt pattern */
+    .stub::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: repeating-linear-gradient(90deg, var(--brass) 0, var(--brass) 12px, transparent 12px, transparent 24px);
+    }
+
+    .stub-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--brass);
+    }
+
+    .stub h3 {
+      font-size: 1.7rem;
+      margin: 12px 0 26px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .stub-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-top: 1px dashed rgba(242, 231, 213, 0.14);
+      font-size: 0.96rem;
+    }
+
+    .stub-row span:first-child {
+      color: var(--parchment-dim);
+    }
+
+    .stub-row span:last-child {
+      color: var(--parchment);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .stub-total {
+      border-top: 2px solid var(--brass);
+      margin-top: 8px;
+      padding-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Space Mono', monospace;
+      align-items: center;
+    }
+
+    .stub-total span:first-child {
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      color: var(--brass);
+    }
+
+    .stub-total span:last-child {
+      color: var(--brass-bright);
+      font-size: 1.45rem;
+      font-weight: 700;
+    }
+
+    /* Booking Form */
+    .form-card {
+      background: rgba(23, 18, 14, 0.45);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 12px;
+      padding: 44px;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow);
+    }
+
+    .field {
+      margin-bottom: 26px;
+    }
+
+    .field label {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--parchment-dim);
+      margin-bottom: 10px;
+    }
+
+    select,
+    input[type=text],
+    input[type=tel] {
+      width: 100%;
+      background: rgba(10, 8, 6, 0.6);
+      border: 1px solid var(--glass-border);
+      color: var(--parchment);
+      padding: 14px 16px;
+      border-radius: 6px;
+      font-family: 'Spectral', serif;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    select:focus,
+    input:focus {
+      outline: none;
+      border-color: var(--brass-bright);
+      background: rgba(10, 8, 6, 0.8);
+      box-shadow: 0 0 10px rgba(197, 160, 89, 0.15);
+    }
+
+    /* Select styling reset */
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e5c17d' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+
+    /* Barber Buttons with Pictures */
+    .barber-pick {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .pick-btn {
+      flex: 1;
+      min-width: 160px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      background: rgba(10, 8, 6, 0.4);
+      color: var(--parchment);
+      font-family: inherit;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .pick-btn img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--glass-border);
+      transition: border-color 0.3s ease;
+    }
+
+    .pick-btn.active,
+    .pick-btn:hover {
+      border-color: var(--brass);
+      color: var(--brass-bright);
+      background: rgba(197, 160, 89, 0.08);
+      box-shadow: 0 4px 12px rgba(197, 160, 89, 0.06);
+    }
+
+    .pick-btn.active img {
+      border-color: var(--brass-bright);
+      filter: drop-shadow(0 0 3px rgba(229, 193, 125, 0.3));
+    }
+
+    /* LIQUID GLASS CALENDAR WIDGET */
+    .calendar-widget {
+      padding: 22px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      background: rgba(10, 8, 6, 0.5);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .cal-month-year {
+      font-family: 'Fraunces', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--brass-bright);
+      letter-spacing: 0.02em;
+      text-transform: capitalize;
+    }
+
+    .cal-nav-btn {
+      background: rgba(229, 193, 125, 0.05);
+      border: 1px solid var(--glass-border);
+      color: var(--parchment);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .cal-nav-btn:hover {
+      background: var(--brass);
+      color: var(--void);
+      border-color: var(--brass-bright);
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--brass-bright);
+      opacity: 0.8;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .cal-day {
+      aspect-ratio: 1.05;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--parchment);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cal-day:hover:not(.disabled) {
+      background: rgba(229, 193, 125, 0.12);
+      border-color: var(--brass-bright);
+      color: var(--brass-bright);
+    }
+
+    .cal-day.active {
+      background: var(--brass);
+      border-color: var(--brass-bright);
+      color: var(--void);
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(197, 160, 89, 0.3);
+      transform: scale(1.05);
+    }
+
+    .cal-day.disabled {
+      opacity: 0.2;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    .cal-day.today {
+      border-color: var(--brass-bright);
+      font-weight: bold;
+      color: var(--brass-bright);
+    }
+
+    /* Time slot grid */
+    .slots {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+      gap: 10px;
+    }
+
+    .slot {
+      padding: 12px 6px;
+      text-align: center;
+      border: 1px solid var(--glass-border);
+      border-radius: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: rgba(10, 8, 6, 0.4);
+      color: var(--parchment);
+      transition: all 0.2s ease;
+    }
+
+    .slot.active,
+    .slot:hover {
+      border-color: var(--brass);
+      color: var(--brass-bright);
+      background: rgba(197, 160, 89, 0.08);
+      box-shadow: 0 0 8px rgba(197, 160, 89, 0.1);
+    }
+
+    .slot-empty {
+      font-size: 0.88rem;
+      color: var(--parchment-dim);
+      font-style: italic;
+      grid-column: 1/-1;
+      line-height: 1.5;
+    }
+
+    .submit-row {
+      margin-top: 36px;
+    }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--parchment-dim);
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+
+    /* ---------- RESEÑAS ---------- */
+    .review-top {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+
+    .review-score {
+      font-family: 'Fraunces', serif;
+      font-size: 3.6rem;
+      font-weight: 700;
+      color: var(--brass-bright);
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+    }
+
+    .review-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 28px;
+      box-shadow: var(--glass-glow);
+      transition: transform 0.3s ease;
+    }
+
+    .review-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .review-quote {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--parchment);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .review-who {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--brass);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ---------- HORARIOS / UBICACION ---------- */
+    #info {
+      padding: 120px 0;
+      background: #130f0c;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 60px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table td {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 1rem;
+    }
+
+    table td:last-child {
+      text-align: right;
+      font-family: 'Space Mono', monospace;
+      color: var(--brass-bright);
+    }
+
+    .addr-box {
+      background: rgba(28, 20, 15, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 30px;
+    }
+
+    .addr-box p {
+      margin-bottom: 18px;
+      color: var(--parchment-dim);
+      line-height: 1.5;
+    }
+
+    .wa-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #25D366;
+      color: #ffffff;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+
+    .wa-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+      background: #20ba56;
+    }
+
+    .wa-btn svg {
+      width: 30px;
+      height: 30px;
+      fill: currentColor;
+    }
+
+    .wa-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
+      animation: wa-pulse 2s infinite;
+      z-index: -1;
+    }
+
+    @keyframes wa-pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
+      }
+
+      70% {
+        box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+      }
+    }
+
+    footer {
+      padding: 60px 28px 40px;
+      text-align: center;
+      border-top: 1px solid var(--line);
+      background: var(--void);
+    }
+
+    footer .brand-name {
+      justify-content: center;
+      margin-bottom: 16px;
+      display: flex;
+    }
+
+    footer .logo-img {
+      height: 32px;
+      width: 32px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 1px solid rgba(197, 160, 89, 0.4);
+      margin-right: 12px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .foot-note {
+      font-size: 0.85rem;
+      color: var(--parchment-dim);
+      margin-top: 18px;
+    }
+
+    /* toast for mock confirmation */
+    .toast {
+      position: fixed;
+      bottom: 26px;
+      left: 50%;
+      transform: translate(-50%, 30px);
+      background: var(--leather);
+      border: 1px solid var(--brass);
+      color: var(--parchment);
+      padding: 18px 28px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      max-width: 90vw;
+      opacity: 0;
+      pointer-events: none;
+      transition: all .35s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+      font-size: 0.95rem;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+      pointer-events: auto;
+    }
+
+    .toast a {
+      color: var(--brass-bright);
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(10, 8, 6, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 44;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 40vh;
+      min-height: 290px;
+      background: rgba(16, 12, 9, 0.96);
+      border-bottom: 1px solid var(--glass-border-active);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.75);
+      z-index: 45;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      transform: translateY(-100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .mobile-menu.open {
+      transform: translateY(0);
+    }
+
+    .mobile-menu a {
+      font-family: 'Fraunces', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--parchment);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.35s ease, transform 0.35s ease, color 0.3s ease;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--brass-bright);
+    }
+
+    .mobile-menu .nav-cta {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      padding: 8px 24px;
+    }
+
+    /* Staggered text animations for menu items when open */
+    .mobile-menu.open a {
+      opacity: 0.85;
+      transform: translateY(0);
+    }
+
+    .mobile-menu.open a:hover {
+      opacity: 1;
+    }
+
+    .mobile-menu.open a:nth-child(1) {
+      transition-delay: 0.08s;
+    }
+
+    .mobile-menu.open a:nth-child(2) {
+      transition-delay: 0.14s;
+    }
+
+    .mobile-menu.open a:nth-child(3) {
+      transition-delay: 0.20s;
+    }
+
+    .mobile-menu.open a:nth-child(4) {
+      transition-delay: 0.26s;
+    }
+
+    .mobile-menu.open a:nth-child(5) {
+      transition-delay: 0.32s;
+    }
+
+    .mobile-menu.open a:nth-child(6) {
+      transition-delay: 0.38s;
+    }
+
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    /* Reviews Layout */
+    .reviews-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 50px;
+      align-items: start;
+    }
+
+    .reviews-list-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 8px;
+      margin-top: 5px;
+    }
+
+    .star-btn {
+      background: transparent;
+      border: none;
+      color: rgba(242, 231, 213, 0.15);
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: color 0.2s ease, transform 0.1s ease;
+    }
+
+    .star-btn:hover {
+      transform: scale(1.15);
+    }
+
+    .star-btn.active {
+      color: var(--brass-bright);
+      text-shadow: 0 0 10px rgba(229, 193, 125, 0.4);
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--brass-bright);
+      background: rgba(10, 8, 6, 0.8);
+      box-shadow: 0 0 10px rgba(197, 160, 89, 0.15);
+    }
+
+    @media (max-width: 960px) {
+      .booking-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .stub {
+        position: static;
+      }
+
+      .reviews-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+
+    @media (max-width: 800px) {
+
+      .nav-links,
+      header nav .nav-cta {
+        display: none !important;
+      }
+
+      .burger {
+        display: flex;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <nav>
-    <div class="brand">
-      <img class="logo-img" src="page_logo_faca9b7cd0620b07.avif" alt="Quercia Logo" onerror="this.style.display='none'">
-      <div class="brand-name">Quercia <span>Studio Barber</span></div>
-    </div>
-    <div class="nav-links">
-      <a href="#servicios">Servicios</a>
-      <a href="#barberos">Barberos</a>
-      <a href="#reservar">Reservar</a>
-      <a href="#reseñas">Reseñas</a>
-      <a href="#info">Ubicación</a>
-    </div>
+  <header>
+    <nav>
+      <div class="brand">
+        <img class="logo-img" src="logo.png" alt="Quercia Logo">
+        <div class="brand-name">Quercia <span>Studio Barber</span></div>
+      </div>
+      <div class="nav-links">
+        <a href="#servicios">Servicios</a>
+        <a href="#barberos">Barberos</a>
+        <a href="#reservar">Reservar</a>
+        <a href="#reseñas">Reseñas</a>
+        <a href="#info">Ubicación</a>
+      </div>
+      <a class="nav-cta" href="#reservar">Reservar turno</a>
+      <button type="button" class="burger" id="burgerToggle" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#servicios">Servicios</a>
+    <a href="#barberos">Barberos</a>
+    <a href="#reservar">Reservar</a>
+    <a href="#reseñas">Reseñas</a>
+    <a href="#info">Ubicación</a>
     <a class="nav-cta" href="#reservar">Reservar turno</a>
-    <button type="button" class="burger" id="burgerToggle" aria-label="Abrir menú">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  </nav>
-</header>
-
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#servicios">Servicios</a>
-  <a href="#barberos">Barberos</a>
-  <a href="#reservar">Reservar</a>
-  <a href="#reseñas">Reseñas</a>
-  <a href="#info">Ubicación</a>
-  <a class="nav-cta" href="#reservar">Reservar turno</a>
-</div>
-<div class="menu-overlay" id="menuOverlay"></div>
-
-<section class="hero">
-  <div class="rating-line"><span class="stars">★★★★★</span> 5.0 · 24 RESEÑAS · SAN JUAN, ARGENTINA</div>
-  <h1 class="display">Quercia<br><em>Studio Barber</em></h1>
-  <div class="hero-sub">Corte · Barba · Ritual de barbería</div>
-  <p class="hero-copy">Un espacio pensado para tomarse el tiempo: cortes de precisión, barba a navaja y una atención que se nota en el detalle. B. Rivadavia Oeste 287, San Juan.</p>
-  <div class="hero-ctas">
-    <a class="btn-primary" href="#reservar">Reservar mi turno</a>
-    <a class="btn-ghost" href="#servicios">Ver servicios y precios</a>
   </div>
-  <div class="hero-meta">
-    <div><strong>7</strong>servicios disponibles</div>
-    <div><strong>2</strong>barberos: Maximo & Diego</div>
-    <div><strong>Lun–Sáb</strong>10 a 21 hs</div>
-  </div>
-</section>
+  <div class="menu-overlay" id="menuOverlay"></div>
 
-<section id="servicios">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="pole"></div>
-      <div>
-        <span class="section-eyebrow">Carta de servicios</span>
-        <h2>Elegí tu turno</h2>
-      </div>
+  <section class="hero">
+    <div class="rating-line"><span class="stars">★★★★★</span> 5.0 · 24 RESEÑAS · SAN JUAN, ARGENTINA</div>
+    <h1 class="display">Quercia<br><em>Studio Barber</em></h1>
+    <div class="hero-sub">Corte · Barba · Ritual de barbería</div>
+    <p class="hero-copy">Un espacio pensado para tomarse el tiempo: cortes de precisión, barba a navaja y una atención
+      que se nota en el detalle. B. Rivadavia Oeste 287, San Juan.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="#reservar">Reservar mi turno</a>
+      <a class="btn-ghost" href="#servicios">Ver servicios y precios</a>
     </div>
-    <div class="tickets" id="ticketGrid"></div>
-  </div>
-</section>
-
-<section id="barberos">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="pole"></div>
-      <div>
-        <span class="section-eyebrow">El equipo</span>
-        <h2>Tus barberos</h2>
-      </div>
+    <div class="hero-meta">
+      <div><strong>7</strong>servicios disponibles</div>
+      <div><strong>2</strong>barberos: Maximo & Diego</div>
+      <div><strong>Lun–Sáb</strong>10 a 21 hs</div>
     </div>
-    <div class="team-grid">
-      <div class="barber-card">
-        <div class="barber-img-wrap">
-          <img src="attachment_e4dc6be19c3243b8.avif" alt="Maximo Russo" onerror="this.src='https://placehold.co/400x500/1c1510/e5c17d?text=Maximo+Russo'">
-        </div>
-        <div class="barber-info">
-          <div class="initials">MR</div>
-          <h3>Maximo Russo</h3>
-          <div class="barber-role">Barbero Principal</div>
-          <p class="barber-desc">Especialista en cortes clásicos y degradés de precisión. Referente indiscutido del equipo Quercia.</p>
-        </div>
-      </div>
-      <div class="barber-card">
-        <div class="barber-img-wrap">
-          <img src="attachment_672366ecee785b09.avif" alt="Diego Sanchez" onerror="this.src='https://placehold.co/400x500/1c1510/e5c17d?text=Diego+Sanchez'">
-        </div>
-        <div class="barber-info">
-          <div class="initials">DS</div>
-          <h3>Diego Sanchez</h3>
-          <div class="barber-role">Estilista & Experto en Barbas</div>
-          <p class="barber-desc">Domina el rasurado a navaja y perfilado clásico. Su precisión y esmero son altamente valorados por sus clientes habituales.</p>
+  </section>
+
+  <section id="servicios">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="pole"></div>
+        <div>
+          <span class="section-eyebrow">Carta de servicios</span>
+          <h2>Elegí tu turno</h2>
         </div>
       </div>
+      <div class="tickets" id="ticketGrid"></div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="reservar">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="pole"></div>
-      <div>
-        <span class="section-eyebrow">Reserva online</span>
-        <h2>Sacá tu turno</h2>
-      </div>
-    </div>
-
-    <div class="booking-grid">
-      <div class="form-card">
-        <div class="field">
-          <label for="servicioSelect">Servicio</label>
-          <select id="servicioSelect"></select>
+  <section id="barberos">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="pole"></div>
+        <div>
+          <span class="section-eyebrow">El equipo</span>
+          <h2>Tus barberos</h2>
         </div>
-
-        <div class="field">
-          <label>Barbero</label>
-          <div class="barber-pick" id="barberPick">
-            <button type="button" class="pick-btn active" data-barbero="Maximo Russo">
-              <img src="attachment_e4dc6be19c3243b8.avif" alt="Maximo" onerror="this.src='https://placehold.co/80/1c1510/e5c17d?text=MR'">
-              <span>Maximo Russo</span>
-            </button>
-            <button type="button" class="pick-btn" data-barbero="Diego Sanchez">
-              <img src="attachment_672366ecee785b09.avif" alt="Diego" onerror="this.src='https://placehold.co/80/1c1510/e5c17d?text=DS'">
-              <span>Diego Sanchez</span>
-            </button>
+      </div>
+      <div class="team-grid">
+        <div class="barber-card">
+          <div class="barber-img-wrap">
+            <img src="attachment_e4dc6be19c3243b8.avif" alt="Maximo Russo"
+              onerror="this.src='https://placehold.co/400x500/1c1510/e5c17d?text=Maximo+Russo'">
+          </div>
+          <div class="barber-info">
+            <div class="initials">MR</div>
+            <h3>Maximo Russo</h3>
+            <div class="barber-role">Barbero Principal</div>
+            <p class="barber-desc">Especialista en cortes clásicos y degradés de precisión. Referente indiscutido del
+              equipo Quercia.</p>
           </div>
         </div>
-
-        <div class="field">
-          <label>Seleccioná la fecha</label>
-          <div class="calendar-widget">
-            <div class="calendar-header">
-              <button type="button" class="cal-nav-btn" id="prevMonthBtn">&lt;</button>
-              <span class="cal-month-year" id="calMonthYear">Julio 2026</span>
-              <button type="button" class="cal-nav-btn" id="nextMonthBtn">&gt;</button>
-            </div>
-            <div class="calendar-weekdays">
-              <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
-            </div>
-            <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="barber-card">
+          <div class="barber-img-wrap">
+            <img src="attachment_672366ecee785b09.avif" alt="Diego Sanchez"
+              onerror="this.src='https://placehold.co/400x500/1c1510/e5c17d?text=Diego+Sanchez'">
           </div>
-          <input type="hidden" id="fechaInput">
+          <div class="barber-info">
+            <div class="initials">DS</div>
+            <h3>Diego Sanchez</h3>
+            <div class="barber-role">Estilista & Experto en Barbas</div>
+            <p class="barber-desc">Domina el rasurado a navaja y perfilado clásico. Su precisión y esmero son altamente
+              valorados por sus clientes habituales.</p>
+          </div>
         </div>
-
-        <div class="field">
-          <label>Horario disponible</label>
-          <div class="slots" id="slotGrid"></div>
-        </div>
-
-        <div class="field">
-          <label for="nombreInput">Nombre</label>
-          <input type="text" id="nombreInput" placeholder="Tu nombre y apellido">
-        </div>
-
-        <div class="field">
-          <label for="telInput">WhatsApp de contacto</label>
-          <input type="tel" id="telInput" placeholder="Ej: 2645551234">
-        </div>
-
-        <div class="submit-row">
-          <button type="button" class="btn-primary" style="width:100%; cursor:pointer; border:none;" id="confirmarBtn">Generar tiket de reserva</button>
-          <p class="hint">Al hacer clic, se generará tu ticket formal abajo. Podrás revisarlo antes de enviarlo por WhatsApp.</p>
-        </div>
-      </div>
-
-      <div class="stub" id="ticketStub">
-        <span class="stub-label">Tu ticket</span>
-        <h3>Resumen del turno</h3>
-        <div class="stub-row"><span>Servicio</span><span id="sumServicio">—</span></div>
-        <div class="stub-row"><span>Barbero</span><span id="sumBarbero">—</span></div>
-        <div class="stub-row"><span>Fecha</span><span id="sumFecha">—</span></div>
-        <div class="stub-row"><span>Horario</span><span id="sumHora">—</span></div>
-        <div class="stub-row"><span>Duración</span><span id="sumDuracion">—</span></div>
-        <div class="stub-total"><span>Total</span><span id="sumTotal">—</span></div>
-        <button type="button" class="btn-primary" style="width:100%; cursor:pointer; border:none; margin-top:20px;" id="realizarReservaBtn">Realizar reserva</button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="reseñas">
-  <div class="wrap">
-    <div class="reviews-layout">
-      <!-- Left Column: Summary and Reviews List -->
-      <div class="reviews-list-col">
-        <div class="review-top">
-          <div class="review-score" id="averageScore">5.0</div>
-          <div>
-            <div class="stars" id="averageStars" style="font-size:1.1rem;">★★★★★</div>
-            <div class="mono" id="reviewsCountLabel" style="font-size:0.8rem; color:var(--parchment-dim);">24 RESEÑAS VERIFICADAS</div>
-          </div>
-        </div>
-        <p style="color:var(--parchment-dim); margin-bottom:30px;">Los clientes destacan una y otra vez la atención personal y el profesionalismo del equipo.</p>
-        <div class="review-grid" id="reviewsContainer">
-          <!-- Las reseñas dinámicas se cargarán aquí -->
+  <section id="reservar">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="pole"></div>
+        <div>
+          <span class="section-eyebrow">Reserva online</span>
+          <h2>Sacá tu turno</h2>
         </div>
       </div>
 
-      <!-- Right Column: Add Review Form -->
-      <div class="review-form-col">
-        <div class="form-card glass-panel" style="padding: 30px; background: rgba(23, 18, 14, 0.65);">
-          <h3 style="font-family:'Fraunces', serif; font-size:1.4rem; color:var(--brass-bright); margin-bottom:15px; text-transform:uppercase; letter-spacing:0.02em;">Dejanos tu reseña</h3>
-          
+      <div class="booking-grid">
+        <div class="form-card">
           <div class="field">
-            <label for="reviewName">Tu Nombre</label>
-            <input type="text" id="reviewName" placeholder="Ej: Mariano Gomez">
+            <label for="servicioSelect">Servicio</label>
+            <select id="servicioSelect"></select>
           </div>
 
           <div class="field">
-            <label for="reviewService">Servicio recibido</label>
-            <select id="reviewService" style="background: rgba(10, 8, 6, 0.6); border: 1px solid var(--glass-border); color: var(--parchment); padding: 12px 14px; border-radius: 6px;">
-              <option value="Corte de Cabello">Corte de Cabello</option>
-              <option value="Corte de Cabello + Barba">Corte de Cabello + Barba</option>
-              <option value="Experiencia Quercia">Experiencia Quercia</option>
-              <option value="Barba">Barba</option>
-              <option value="Limpieza Facial">Limpieza Facial</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label>Puntuación</label>
-            <div class="star-rating" id="starRatingSelector">
-              <button type="button" class="star-btn active" data-val="1">★</button>
-              <button type="button" class="star-btn active" data-val="2">★</button>
-              <button type="button" class="star-btn active" data-val="3">★</button>
-              <button type="button" class="star-btn active" data-val="4">★</button>
-              <button type="button" class="star-btn active" data-val="5">★</button>
+            <label>Barbero</label>
+            <div class="barber-pick" id="barberPick">
+              <button type="button" class="pick-btn active" data-barbero="Maximo Russo">
+                <img src="attachment_e4dc6be19c3243b8.avif" alt="Maximo"
+                  onerror="this.src='https://placehold.co/80/1c1510/e5c17d?text=MR'">
+                <span>Maximo Russo</span>
+              </button>
+              <button type="button" class="pick-btn" data-barbero="Diego Sanchez">
+                <img src="attachment_672366ecee785b09.avif" alt="Diego"
+                  onerror="this.src='https://placehold.co/80/1c1510/e5c17d?text=DS'">
+                <span>Diego Sanchez</span>
+              </button>
             </div>
           </div>
 
           <div class="field">
-            <label for="reviewText">Comentario</label>
-            <textarea id="reviewText" rows="3" placeholder="Contanos tu experiencia..." style="width:100%; background:rgba(10, 8, 6, 0.6); border:1px solid var(--glass-border); color:var(--parchment); padding:12px; border-radius:6px; font-family:inherit; font-size:0.95rem; resize:vertical;"></textarea>
+            <label>Seleccioná la fecha</label>
+            <div class="calendar-widget">
+              <div class="calendar-header">
+                <button type="button" class="cal-nav-btn" id="prevMonthBtn">&lt;</button>
+                <span class="cal-month-year" id="calMonthYear">Julio 2026</span>
+                <button type="button" class="cal-nav-btn" id="nextMonthBtn">&gt;</button>
+              </div>
+              <div class="calendar-weekdays">
+                <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+              </div>
+              <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+            <input type="hidden" id="fechaInput">
           </div>
 
-          <button type="button" class="btn-primary" style="width:100%; cursor:pointer; border:none; padding:12px; font-family:'Space Mono', monospace; font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;" id="submitReviewBtn">Publicar reseña</button>
+          <div class="field">
+            <label>Horario disponible</label>
+            <div class="slots" id="slotGrid"></div>
+          </div>
+
+          <div class="field">
+            <label for="nombreInput">Nombre</label>
+            <input type="text" id="nombreInput" placeholder="Tu nombre y apellido">
+          </div>
+
+          <div class="field">
+            <label for="telInput">WhatsApp de contacto</label>
+            <input type="tel" id="telInput" placeholder="Ej: 2645551234">
+          </div>
+
+          <div class="submit-row">
+            <button type="button" class="btn-primary" style="width:100%; cursor:pointer; border:none;"
+              id="confirmarBtn">Generar tiket de reserva</button>
+            <p class="hint">Al hacer clic, se generará tu ticket formal abajo. Podrás revisarlo antes de enviarlo por
+              WhatsApp.</p>
+          </div>
+        </div>
+
+        <div class="stub" id="ticketStub">
+          <span class="stub-label">Tu ticket</span>
+          <h3>Resumen del turno</h3>
+          <div class="stub-row"><span>Servicio</span><span id="sumServicio">—</span></div>
+          <div class="stub-row"><span>Barbero</span><span id="sumBarbero">—</span></div>
+          <div class="stub-row"><span>Fecha</span><span id="sumFecha">—</span></div>
+          <div class="stub-row"><span>Horario</span><span id="sumHora">—</span></div>
+          <div class="stub-row"><span>Duración</span><span id="sumDuracion">—</span></div>
+          <div class="stub-total"><span>Total</span><span id="sumTotal">—</span></div>
+          <button type="button" class="btn-primary" style="width:100%; cursor:pointer; border:none; margin-top:20px;"
+            id="realizarReservaBtn">Realizar reserva</button>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="info">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="pole"></div>
-      <div>
-        <span class="section-eyebrow">Horarios y ubicación</span>
-        <h2>Vení a visitarnos</h2>
+  <section id="reseñas">
+    <div class="wrap">
+      <div class="reviews-layout">
+        <!-- Left Column: Summary and Reviews List -->
+        <div class="reviews-list-col">
+          <div class="review-top">
+            <div class="review-score" id="averageScore">5.0</div>
+            <div>
+              <div class="stars" id="averageStars" style="font-size:1.1rem;">★★★★★</div>
+              <div class="mono" id="reviewsCountLabel" style="font-size:0.8rem; color:var(--parchment-dim);">24 RESEÑAS
+                VERIFICADAS</div>
+            </div>
+          </div>
+          <p style="color:var(--parchment-dim); margin-bottom:30px;">Los clientes destacan una y otra vez la atención
+            personal y el profesionalismo del equipo.</p>
+          <div class="review-grid" id="reviewsContainer">
+            <!-- Las reseñas dinámicas se cargarán aquí -->
+          </div>
+        </div>
+
+        <!-- Right Column: Add Review Form -->
+        <div class="review-form-col">
+          <div class="form-card glass-panel" style="padding: 30px; background: rgba(23, 18, 14, 0.65);">
+            <h3
+              style="font-family:'Fraunces', serif; font-size:1.4rem; color:var(--brass-bright); margin-bottom:15px; text-transform:uppercase; letter-spacing:0.02em;">
+              Dejanos tu reseña</h3>
+
+            <div class="field">
+              <label for="reviewName">Tu Nombre</label>
+              <input type="text" id="reviewName" placeholder="Ej: Mariano Gomez">
+            </div>
+
+            <div class="field">
+              <label for="reviewService">Servicio recibido</label>
+              <select id="reviewService"
+                style="background: rgba(10, 8, 6, 0.6); border: 1px solid var(--glass-border); color: var(--parchment); padding: 12px 14px; border-radius: 6px;">
+                <option value="Corte de Cabello">Corte de Cabello</option>
+                <option value="Corte de Cabello + Barba">Corte de Cabello + Barba</option>
+                <option value="Experiencia Quercia">Experiencia Quercia</option>
+                <option value="Barba">Barba</option>
+                <option value="Limpieza Facial">Limpieza Facial</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Puntuación</label>
+              <div class="star-rating" id="starRatingSelector">
+                <button type="button" class="star-btn active" data-val="1">★</button>
+                <button type="button" class="star-btn active" data-val="2">★</button>
+                <button type="button" class="star-btn active" data-val="3">★</button>
+                <button type="button" class="star-btn active" data-val="4">★</button>
+                <button type="button" class="star-btn active" data-val="5">★</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="reviewText">Comentario</label>
+              <textarea id="reviewText" rows="3" placeholder="Contanos tu experiencia..."
+                style="width:100%; background:rgba(10, 8, 6, 0.6); border:1px solid var(--glass-border); color:var(--parchment); padding:12px; border-radius:6px; font-family:inherit; font-size:0.95rem; resize:vertical;"></textarea>
+            </div>
+
+            <button type="button" class="btn-primary"
+              style="width:100%; cursor:pointer; border:none; padding:12px; font-family:'Space Mono', monospace; font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;"
+              id="submitReviewBtn">Publicar reseña</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="info-grid">
-      <table>
-        <tr><td>Lunes</td><td>10:00 – 21:00</td></tr>
-        <tr><td>Martes</td><td>12:00 – 21:00</td></tr>
-        <tr><td>Miércoles</td><td>10:00 – 21:00</td></tr>
-        <tr><td>Jueves</td><td>10:00 – 21:00</td></tr>
-        <tr><td>Viernes</td><td>10:00 – 21:00</td></tr>
-        <tr><td>Sábado</td><td>10:00 – 21:00</td></tr>
-        <tr><td>Domingo</td><td>Cerrado</td></tr>
-      </table>
-      <div class="addr-box">
-        <p><strong style="color:var(--parchment)">Dirección</strong><br>B. Rivadavia Oeste 287, San Juan, Capital, Argentina</p>
-        <p><strong style="color:var(--parchment)">Condiciones</strong><br>Cancelá hasta 2 horas antes de tu turno. Podés modificar tu reserva hasta 2 veces.</p>
-        <a class="wa-btn" href="https://wa.me/542645611229" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+  </section>
+
+  <section id="info">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="pole"></div>
+        <div>
+          <span class="section-eyebrow">Horarios y ubicación</span>
+          <h2>Vení a visitarnos</h2>
+        </div>
+      </div>
+      <div class="info-grid">
+        <table>
+          <tr>
+            <td>Lunes</td>
+            <td>10:00 – 21:00</td>
+          </tr>
+          <tr>
+            <td>Martes</td>
+            <td>12:00 – 21:00</td>
+          </tr>
+          <tr>
+            <td>Miércoles</td>
+            <td>10:00 – 21:00</td>
+          </tr>
+          <tr>
+            <td>Jueves</td>
+            <td>10:00 – 21:00</td>
+          </tr>
+          <tr>
+            <td>Viernes</td>
+            <td>10:00 – 21:00</td>
+          </tr>
+          <tr>
+            <td>Sábado</td>
+            <td>10:00 – 21:00</td>
+          </tr>
+          <tr>
+            <td>Domingo</td>
+            <td>Cerrado</td>
+          </tr>
+        </table>
+        <div class="addr-box">
+          <p><strong style="color:var(--parchment)">Dirección</strong><br>B. Rivadavia Oeste 287, San Juan, Capital,
+            Argentina</p>
+          <p><strong style="color:var(--parchment)">Condiciones</strong><br>Cancelá hasta 2 horas antes de tu turno.
+            Podés modificar tu reserva hasta 2 veces.</p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<footer>
-  <div class="brand-name"><div class="pole" style="height:24px; margin-right:10px;"></div>Quercia <span style="color:var(--brass-bright)">Studio Barber</span></div>
-  <div class="mono" style="font-size:0.8rem; color:var(--parchment-dim);">B. Rivadavia Oeste 287, San Juan · +54 264 561-1229</div>
-  <p class="foot-note">Demo de diseño — propuesta de sistema de reservas propio para reemplazar la página de marketplace de Agenda Pro.</p>
-</footer>
+  <footer>
+    <div class="brand-name">
+      <img src="logo.png" class="logo-img" alt="Quercia Logo">Quercia <span
+        style="color:var(--brass-bright)">Studio Barber</span>
+    </div>
+    <div class="mono" style="font-size:0.8rem; color:var(--parchment-dim);">B. Rivadavia Oeste 287, San Juan · +54 264
+      561-1229</div>
+    <p class="foot-note">Demo de diseño — propuesta de sistema de reservas propio para reemplazar la página de
+      marketplace de Agenda Pro.</p>
+  </footer>
 
-<div class="toast" id="toast"></div>
+  <div class="toast" id="toast"></div>
 
-<script>
-  const SERVICIOS = [
-    { nombre:"Corte de Cabello", desc:"Asesoramiento de imagen, bebida de cortesía, aplicación de productos y lavado final.", min:50, precio:22000 },
-    { nombre:"Experiencia Capilar", desc:"Asesoramiento previo, bebida de cortesía, tratamiento de nutrición y lavado final.", min:70, precio:29000 },
-    { nombre:"Corte de Cabello + Barba", desc:"Asesoramiento de imagen, bebida de cortesía y lavado de cabello al finalizar.", min:75, precio:29000 },
-    { nombre:"Barba", desc:"Perfilado o rasurado de barba a navaja.", min:30, precio:16000 },
-    { nombre:"Experiencia Quercia", desc:"Corte de cabello más una relajante limpieza facial. Ideal para salir de la rutina.", min:100, precio:38000 },
-    { nombre:"Limpieza Facial", desc:"Ideal para desechar impurezas y renovar el rostro.", min:30, precio:18000 },
-    { nombre:"Nutrición Capilar", desc:"Tratamiento breve para nutrir y reparar el cabello dañado.", min:20, precio:15000 },
-  ];
+  <script>
+    const SERVICIOS = [
+      { nombre: "Corte de Cabello", desc: "Asesoramiento de imagen, bebida de cortesía, aplicación de productos y lavado final.", min: 50, precio: 22000 },
+      { nombre: "Experiencia Capilar", desc: "Asesoramiento previo, bebida de cortesía, tratamiento de nutrición y lavado final.", min: 70, precio: 29000 },
+      { nombre: "Corte de Cabello + Barba", desc: "Asesoramiento de imagen, bebida de cortesía y lavado de cabello al finalizar.", min: 75, precio: 29000 },
+      { nombre: "Barba", desc: "Perfilado o rasurado de barba a navaja.", min: 30, precio: 16000 },
+      { nombre: "Experiencia Quercia", desc: "Corte de cabello más una relajante limpieza facial. Ideal para salir de la rutina.", min: 100, precio: 38000 },
+      { nombre: "Limpieza Facial", desc: "Ideal para desechar impurezas y renovar el rostro.", min: 30, precio: 18000 },
+      { nombre: "Nutrición Capilar", desc: "Tratamiento breve para nutrir y reparar el cabello dañado.", min: 20, precio: 15000 },
+    ];
 
-  const HORARIOS = {
-    1:["10:00","21:00"], 2:["12:00","21:00"], 3:["10:00","21:00"],
-    4:["10:00","21:00"], 5:["10:00","21:00"], 6:["10:00","21:00"], 0:null
-  };
+    const HORARIOS = {
+      1: ["10:00", "21:00"], 2: ["12:00", "21:00"], 3: ["10:00", "21:00"],
+      4: ["10:00", "21:00"], 5: ["10:00", "21:00"], 6: ["10:00", "21:00"], 0: null
+    };
 
-  const fmtPrecio = n => "$" + n.toLocaleString("es-AR") + " ARS";
+    const fmtPrecio = n => "$" + n.toLocaleString("es-AR") + " ARS";
 
-  // render ticket cards
-  const grid = document.getElementById('ticketGrid');
-  SERVICIOS.forEach((s, i) => {
-    const el = document.createElement('div');
-    el.className = 'ticket';
-    el.innerHTML = `
+    // render ticket cards
+    const grid = document.getElementById('ticketGrid');
+    SERVICIOS.forEach((s, i) => {
+      const el = document.createElement('div');
+      el.className = 'ticket';
+      el.innerHTML = `
       <h3>${s.nombre}</h3>
       <p>${s.desc}</p>
       <div class="notch-r"></div>
@@ -1164,366 +1771,377 @@
       </div>
       <button class="ticket-btn" data-idx="${i}">Agendar</button>
     `;
-    grid.appendChild(el);
-  });
-  grid.addEventListener('click', e => {
-    if(e.target.classList.contains('ticket-btn')){
-      const idx = e.target.dataset.idx;
-      document.getElementById('servicioSelect').value = idx;
-      document.getElementById('servicioSelect').dispatchEvent(new Event('change'));
-      document.getElementById('reservar').scrollIntoView({behavior:'smooth'});
-    }
-  });
-
-  // populate service select
-  const servicioSelect = document.getElementById('servicioSelect');
-  SERVICIOS.forEach((s,i)=>{
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = `${s.nombre} — ${s.min} min — ${fmtPrecio(s.precio)}`;
-    servicioSelect.appendChild(opt);
-  });
-
-  let state = { servicioIdx:0, barbero:"Maximo Russo", fecha:null, hora:null };
-
-  // Calendar Widget Logic
-  let today = new Date();
-  let currentYear = today.getFullYear();
-  let currentMonth = today.getMonth(); // 0-11
-  const MESES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
-  function renderCalendar() {
-    const grid = document.getElementById('calendarGrid');
-    const label = document.getElementById('calMonthYear');
-    grid.innerHTML = '';
-    
-    // Set month / year label
-    label.textContent = `${MESES[currentMonth]} ${currentYear}`;
-    
-    // First day weekday index (0 = Sunday, 1 = Monday, etc.)
-    const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
-    // Total days in viewed month
-    const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
-    
-    // Render blank spaces for weekdays alignment
-    for (let i = 0; i < firstDayIndex; i++) {
-      const empty = document.createElement('div');
-      grid.appendChild(empty);
-    }
-    
-    // Render day buttons
-    for (let day = 1; day <= totalDays; day++) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'cal-day';
-      btn.textContent = day;
-      
-      const y = currentYear;
-      const m = String(currentMonth + 1).padStart(2, '0');
-      const d = String(day).padStart(2, '0');
-      const dateStr = `${y}-${m}-${d}`;
-      
-      const dayDate = new Date(currentYear, currentMonth, day);
-      const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      
-      const isPast = dayDate < todayDate;
-      const isSunday = dayDate.getDay() === 0;
-      
-      if (isPast || isSunday) {
-        btn.classList.add('disabled');
-        btn.disabled = true;
-      } else {
-        // Highlight today
-        if (dayDate.toDateString() === todayDate.toDateString()) {
-          btn.classList.add('today');
-        }
-        
-        // Highlight active selection
-        if (state.fecha === dateStr) {
-          btn.classList.add('active');
-        }
-        
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.cal-day').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          state.fecha = dateStr;
-          document.getElementById('fechaInput').value = dateStr;
-          buildSlots(dateStr);
-          updateStub();
-        });
+      grid.appendChild(el);
+    });
+    grid.addEventListener('click', e => {
+      if (e.target.classList.contains('ticket-btn')) {
+        const idx = e.target.dataset.idx;
+        document.getElementById('servicioSelect').value = idx;
+        document.getElementById('servicioSelect').dispatchEvent(new Event('change'));
+        document.getElementById('reservar').scrollIntoView({ behavior: 'smooth' });
       }
-      grid.appendChild(btn);
-    }
-    
-    // Disable prev month button if looking at current month
-    const prevBtn = document.getElementById('prevMonthBtn');
-    if (currentYear === today.getFullYear() && currentMonth === today.getMonth()) {
-      prevBtn.style.opacity = '0.25';
-      prevBtn.style.pointerEvents = 'none';
-    } else {
-      prevBtn.style.opacity = '1';
-      prevBtn.style.pointerEvents = 'auto';
-    }
-  }
+    });
 
-  document.getElementById('prevMonthBtn').addEventListener('click', () => {
-    currentMonth--;
-    if (currentMonth < 0) {
-      currentMonth = 11;
-      currentYear--;
-    }
-    renderCalendar();
-  });
+    // populate service select
+    const servicioSelect = document.getElementById('servicioSelect');
+    SERVICIOS.forEach((s, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `${s.nombre} — ${s.min} min — ${fmtPrecio(s.precio)}`;
+      servicioSelect.appendChild(opt);
+    });
 
-  document.getElementById('nextMonthBtn').addEventListener('click', () => {
-    currentMonth++;
-    if (currentMonth > 11) {
-      currentMonth = 0;
-      currentYear++;
-    }
-    renderCalendar();
-  });
+    let state = { servicioIdx: 0, barbero: "Maximo Russo", fecha: null, hora: null };
 
-  function updateStub(){
-    const s = SERVICIOS[state.servicioIdx];
-    document.getElementById('sumServicio').textContent = s.nombre;
-    document.getElementById('sumBarbero').textContent = state.barbero;
-    document.getElementById('sumFecha').textContent = state.fecha ? new Date(state.fecha+"T00:00").toLocaleDateString('es-AR',{weekday:'long', day:'numeric', month:'long'}) : "—";
-    document.getElementById('sumHora').textContent = state.hora || "—";
-    document.getElementById('sumDuracion').textContent = s.min + " min";
-    document.getElementById('sumTotal').textContent = fmtPrecio(s.precio);
-  }
+    // Calendar Widget Logic
+    let today = new Date();
+    let currentYear = today.getFullYear();
+    let currentMonth = today.getMonth(); // 0-11
+    const MESES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-  servicioSelect.addEventListener('change', ()=>{
-    state.servicioIdx = parseInt(servicioSelect.value);
-    updateStub();
-  });
+    function renderCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      const label = document.getElementById('calMonthYear');
+      grid.innerHTML = '';
 
-  document.getElementById('barberPick').addEventListener('click', e=>{
-    const btn = e.target.closest('.pick-btn');
-    if(btn){
-      document.querySelectorAll('.pick-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      state.barbero = btn.dataset.barbero;
-      updateStub();
-    }
-  });
+      // Set month / year label
+      label.textContent = `${MESES[currentMonth]} ${currentYear}`;
 
-  function buildSlots(dateStr){
-    const slotGrid = document.getElementById('slotGrid');
-    slotGrid.innerHTML = '';
-    state.hora = null;
-    if(!dateStr){ slotGrid.innerHTML = '<div class="slot-empty">Elegí una fecha en el calendario para ver horarios disponibles.</div>'; return; }
-    const day = new Date(dateStr+"T00:00").getDay();
-    const rango = HORARIOS[day];
-    if(!rango){ slotGrid.innerHTML = '<div class="slot-empty">Cerrado este día. Probá otra fecha.</div>'; updateStub(); return; }
-    const [openH] = rango[0].split(":").map(Number);
-    const [closeH] = rango[1].split(":").map(Number);
-    for(let h=openH; h<closeH; h++){
-      ["00","30"].forEach(m=>{
-        if(h===closeH-1 && m==="30") return;
-        const label = `${String(h).padStart(2,'0')}:${m}`;
+      // First day weekday index (0 = Sunday, 1 = Monday, etc.)
+      const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+      // Total days in viewed month
+      const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+      // Render blank spaces for weekdays alignment
+      for (let i = 0; i < firstDayIndex; i++) {
+        const empty = document.createElement('div');
+        grid.appendChild(empty);
+      }
+
+      // Render day buttons
+      for (let day = 1; day <= totalDays; day++) {
         const btn = document.createElement('button');
-        btn.className = 'slot'; btn.type='button'; btn.textContent = label;
-        btn.addEventListener('click', ()=>{
-          document.querySelectorAll('.slot').forEach(s=>s.classList.remove('active'));
-          btn.classList.add('active');
-          state.hora = label;
-          updateStub();
+        btn.type = 'button';
+        btn.className = 'cal-day';
+        btn.textContent = day;
+
+        const y = currentYear;
+        const m = String(currentMonth + 1).padStart(2, '0');
+        const d = String(day).padStart(2, '0');
+        const dateStr = `${y}-${m}-${d}`;
+
+        const dayDate = new Date(currentYear, currentMonth, day);
+        const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+        const isPast = dayDate < todayDate;
+        const isSunday = dayDate.getDay() === 0;
+
+        if (isPast || isSunday) {
+          btn.classList.add('disabled');
+          btn.disabled = true;
+        } else {
+          // Highlight today
+          if (dayDate.toDateString() === todayDate.toDateString()) {
+            btn.classList.add('today');
+          }
+
+          // Highlight active selection
+          if (state.fecha === dateStr) {
+            btn.classList.add('active');
+          }
+
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.cal-day').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.fecha = dateStr;
+            document.getElementById('fechaInput').value = dateStr;
+            buildSlots(dateStr);
+            updateStub();
+          });
+        }
+        grid.appendChild(btn);
+      }
+
+      // Disable prev month button if looking at current month
+      const prevBtn = document.getElementById('prevMonthBtn');
+      if (currentYear === today.getFullYear() && currentMonth === today.getMonth()) {
+        prevBtn.style.opacity = '0.25';
+        prevBtn.style.pointerEvents = 'none';
+      } else {
+        prevBtn.style.opacity = '1';
+        prevBtn.style.pointerEvents = 'auto';
+      }
+    }
+
+    document.getElementById('prevMonthBtn').addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar();
+    });
+
+    document.getElementById('nextMonthBtn').addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      renderCalendar();
+    });
+
+    function updateStub() {
+      const s = SERVICIOS[state.servicioIdx];
+      document.getElementById('sumServicio').textContent = s.nombre;
+      document.getElementById('sumBarbero').textContent = state.barbero;
+      document.getElementById('sumFecha').textContent = state.fecha ? new Date(state.fecha + "T00:00").toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) : "—";
+      document.getElementById('sumHora').textContent = state.hora || "—";
+      document.getElementById('sumDuracion').textContent = s.min + " min";
+      document.getElementById('sumTotal').textContent = fmtPrecio(s.precio);
+    }
+
+    servicioSelect.addEventListener('change', () => {
+      state.servicioIdx = parseInt(servicioSelect.value);
+      updateStub();
+    });
+
+    document.getElementById('barberPick').addEventListener('click', e => {
+      const btn = e.target.closest('.pick-btn');
+      if (btn) {
+        document.querySelectorAll('.pick-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.barbero = btn.dataset.barbero;
+        updateStub();
+      }
+    });
+
+    function buildSlots(dateStr) {
+      const slotGrid = document.getElementById('slotGrid');
+      slotGrid.innerHTML = '';
+      state.hora = null;
+      if (!dateStr) { slotGrid.innerHTML = '<div class="slot-empty">Elegí una fecha en el calendario para ver horarios disponibles.</div>'; return; }
+      const day = new Date(dateStr + "T00:00").getDay();
+      const rango = HORARIOS[day];
+      if (!rango) { slotGrid.innerHTML = '<div class="slot-empty">Cerrado este día. Probá otra fecha.</div>'; updateStub(); return; }
+      const [openH] = rango[0].split(":").map(Number);
+      const [closeH] = rango[1].split(":").map(Number);
+      for (let h = openH; h < closeH; h++) {
+        ["00", "30"].forEach(m => {
+          if (h === closeH - 1 && m === "30") return;
+          const label = `${String(h).padStart(2, '0')}:${m}`;
+          const btn = document.createElement('button');
+          btn.className = 'slot'; btn.type = 'button'; btn.textContent = label;
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.slot').forEach(s => s.classList.remove('active'));
+            btn.classList.add('active');
+            state.hora = label;
+            updateStub();
+          });
+          slotGrid.appendChild(btn);
         });
-        slotGrid.appendChild(btn);
-      });
-    }
-  }
-
-  renderCalendar();
-  buildSlots(null);
-  updateStub();
-
-  document.getElementById('confirmarBtn').addEventListener('click', ()=>{
-    const nombre = document.getElementById('nombreInput').value.trim();
-    const s = SERVICIOS[state.servicioIdx];
-    const toast = document.getElementById('toast');
-
-    if(!state.fecha || !state.hora || !nombre){
-      toast.innerHTML = 'Completá servicio, barbero, fecha, horario y tu nombre antes de generar el ticket.';
-      toast.classList.add('show');
-      setTimeout(()=>toast.classList.remove('show'), 3200);
-      return;
+      }
     }
 
-    // Update the ticket summary fields
+    renderCalendar();
+    buildSlots(null);
     updateStub();
 
-    // Show the ticket stub and scroll to it
-    const ticketStub = document.getElementById('ticketStub');
-    ticketStub.classList.add('show');
-    ticketStub.scrollIntoView({ behavior: 'smooth' });
-  });
+    document.getElementById('confirmarBtn').addEventListener('click', () => {
+      const nombre = document.getElementById('nombreInput').value.trim();
+      const s = SERVICIOS[state.servicioIdx];
+      const toast = document.getElementById('toast');
 
-  document.getElementById('realizarReservaBtn').addEventListener('click', () => {
-    const nombre = document.getElementById('nombreInput').value.trim();
-    const tel = document.getElementById('telInput').value.trim();
-    const s = SERVICIOS[state.servicioIdx];
-    const toast = document.getElementById('toast');
-
-    const fechaTxt = new Date(state.fecha+"T00:00").toLocaleDateString('es-AR',{weekday:'long', day:'numeric', month:'long'});
-    const msg = `¡Hola! Quiero reservar un turno en Quercia Studio Barber.%0A%0AServicio: ${s.nombre}%0ABarbero: ${state.barbero}%0AFecha: ${fechaTxt}%0AHorario: ${state.hora}%0ANombre: ${nombre}${tel ? "%0ATel: "+tel : ""}`;
-    const waUrl = `https://wa.me/542645611229?text=${msg}`;
-
-    // Open WhatsApp in new tab
-    window.open(waUrl, '_blank', 'noopener');
-
-    // Show confirmation toast
-    toast.innerHTML = `Reserva enviada. Si no se abrió automáticamente, <a href="${waUrl}" target="_blank" rel="noopener">hacé clic acá para enviar por WhatsApp →</a>`;
-    toast.classList.add('show');
-  });
-
-  // Mobile menu toggle
-  const burgerToggle = document.getElementById('burgerToggle');
-  const mobileMenu = document.getElementById('mobileMenu');
-  const menuOverlay = document.getElementById('menuOverlay');
-  
-  function closeMenu() {
-    burgerToggle.classList.remove('open');
-    mobileMenu.classList.remove('open');
-    if (menuOverlay) menuOverlay.classList.remove('open');
-    document.body.classList.remove('menu-open');
-  }
-
-  if (burgerToggle && mobileMenu) {
-    burgerToggle.addEventListener('click', () => {
-      burgerToggle.classList.toggle('open');
-      mobileMenu.classList.toggle('open');
-      if (menuOverlay) menuOverlay.classList.toggle('open');
-      document.body.classList.toggle('menu-open');
-    });
-    
-    // Close menu when clicking links
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', closeMenu);
-    });
-
-    // Close menu when clicking the blurred overlay below
-    if (menuOverlay) {
-      menuOverlay.addEventListener('click', closeMenu);
-    }
-  }
-
-  // Reviews dynamic data & posting
-  let REVIEWS_DATA = [
-    { nombre: "Federico", servicio: "Corte de cabello + barba", rating: 5, quote: "Atención de calidad, excelente servicio, y el trato personal de Maxi y Diego." },
-    { nombre: "Vladimir", servicio: "Corte de cabello + barba", rating: 5, quote: "Excelencia!!" },
-    { nombre: "Marcelo", servicio: "Corte de cabello", rating: 5, quote: "Excelente atención." }
-  ];
-
-  function renderReviews() {
-    const container = document.getElementById('reviewsContainer');
-    if (!container) return;
-    container.innerHTML = '';
-    
-    REVIEWS_DATA.forEach(r => {
-      const card = document.createElement('div');
-      card.className = 'review-card';
-      
-      let starsHtml = '';
-      for (let i = 0; i < 5; i++) {
-        starsHtml += i < r.rating ? '★' : '☆';
+      if (!state.fecha || !state.hora || !nombre) {
+        toast.innerHTML = 'Completá servicio, barbero, fecha, horario y tu nombre antes de generar el ticket.';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3200);
+        return;
       }
-      
-      card.innerHTML = `
+
+      // Update the ticket summary fields
+      updateStub();
+
+      // Show the ticket stub and scroll to it
+      const ticketStub = document.getElementById('ticketStub');
+      ticketStub.classList.add('show');
+      ticketStub.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('realizarReservaBtn').addEventListener('click', () => {
+      const nombre = document.getElementById('nombreInput').value.trim();
+      const tel = document.getElementById('telInput').value.trim();
+      const s = SERVICIOS[state.servicioIdx];
+      const toast = document.getElementById('toast');
+
+      const fechaTxt = new Date(state.fecha + "T00:00").toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+      const msg = `¡Hola! Quiero reservar un turno en Quercia Studio Barber.%0A%0AServicio: ${s.nombre}%0ABarbero: ${state.barbero}%0AFecha: ${fechaTxt}%0AHorario: ${state.hora}%0ANombre: ${nombre}${tel ? "%0ATel: " + tel : ""}`;
+      const waUrl = `https://wa.me/542645611229?text=${msg}`;
+
+      // Open WhatsApp in new tab
+      window.open(waUrl, '_blank', 'noopener');
+
+      // Show confirmation toast
+      toast.innerHTML = `Reserva enviada. Si no se abrió automáticamente, <a href="${waUrl}" target="_blank" rel="noopener">hacé clic acá para enviar por WhatsApp →</a>`;
+      toast.classList.add('show');
+    });
+
+    // Mobile menu toggle
+    const burgerToggle = document.getElementById('burgerToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    function closeMenu() {
+      burgerToggle.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      if (menuOverlay) menuOverlay.classList.remove('open');
+      document.body.classList.remove('menu-open');
+    }
+
+    if (burgerToggle && mobileMenu) {
+      burgerToggle.addEventListener('click', () => {
+        burgerToggle.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+        if (menuOverlay) menuOverlay.classList.toggle('open');
+        document.body.classList.toggle('menu-open');
+      });
+
+      // Close menu when clicking links
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Close menu when clicking the blurred overlay below
+      if (menuOverlay) {
+        menuOverlay.addEventListener('click', closeMenu);
+      }
+    }
+
+    // Reviews dynamic data & posting
+    let REVIEWS_DATA = [
+      { nombre: "Federico", servicio: "Corte de cabello + barba", rating: 5, quote: "Atención de calidad, excelente servicio, y el trato personal de Maxi y Diego." },
+      { nombre: "Vladimir", servicio: "Corte de cabello + barba", rating: 5, quote: "Excelencia!!" },
+      { nombre: "Marcelo", servicio: "Corte de cabello", rating: 5, quote: "Excelente atención." }
+    ];
+
+    function renderReviews() {
+      const container = document.getElementById('reviewsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      REVIEWS_DATA.forEach(r => {
+        const card = document.createElement('div');
+        card.className = 'review-card';
+
+        let starsHtml = '';
+        for (let i = 0; i < 5; i++) {
+          starsHtml += i < r.rating ? '★' : '☆';
+        }
+
+        card.innerHTML = `
         <div class="stars" style="font-size:0.9rem; color:var(--brass-bright); margin-bottom:8px;">${starsHtml}</div>
         <p class="review-quote">"${r.quote}"</p>
         <div class="review-who">${r.nombre} · ${r.servicio}</div>
       `;
-      container.appendChild(card);
-    });
-  }
-
-  function updateReviewStats() {
-    if (REVIEWS_DATA.length === 0) return;
-    const sum = REVIEWS_DATA.reduce((acc, r) => acc + r.rating, 0);
-    const avg = (sum / REVIEWS_DATA.length).toFixed(1);
-    
-    document.getElementById('averageScore').textContent = avg;
-    
-    // Round to nearest integer for display stars
-    const roundedStars = Math.round(Number(avg));
-    let starsStr = '';
-    for (let i = 0; i < 5; i++) {
-      starsStr += i < roundedStars ? '★' : '☆';
+        container.appendChild(card);
+      });
     }
-    document.getElementById('averageStars').textContent = starsStr;
-    
-    const baseCount = 24; // starting count from user info
-    const totalCount = baseCount + (REVIEWS_DATA.length - 3);
-    document.getElementById('reviewsCountLabel').textContent = `${totalCount} RESEÑAS VERIFICADAS`;
-  }
 
-  // Star Rating Selector logic
-  let selectedRating = 5;
-  const starBtns = document.querySelectorAll('#starRatingSelector .star-btn');
-  starBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const val = parseInt(btn.dataset.val);
-      selectedRating = val;
-      starBtns.forEach(b => {
-        const bVal = parseInt(b.dataset.val);
-        if (bVal <= val) {
-          b.classList.add('active');
-        } else {
-          b.classList.remove('active');
-        }
+    function updateReviewStats() {
+      if (REVIEWS_DATA.length === 0) return;
+      const sum = REVIEWS_DATA.reduce((acc, r) => acc + r.rating, 0);
+      const avg = (sum / REVIEWS_DATA.length).toFixed(1);
+
+      document.getElementById('averageScore').textContent = avg;
+
+      // Round to nearest integer for display stars
+      const roundedStars = Math.round(Number(avg));
+      let starsStr = '';
+      for (let i = 0; i < 5; i++) {
+        starsStr += i < roundedStars ? '★' : '☆';
+      }
+      document.getElementById('averageStars').textContent = starsStr;
+
+      const baseCount = 24; // starting count from user info
+      const totalCount = baseCount + (REVIEWS_DATA.length - 3);
+      document.getElementById('reviewsCountLabel').textContent = `${totalCount} RESEÑAS VERIFICADAS`;
+    }
+
+    // Star Rating Selector logic
+    let selectedRating = 5;
+    const starBtns = document.querySelectorAll('#starRatingSelector .star-btn');
+    starBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = parseInt(btn.dataset.val);
+        selectedRating = val;
+        starBtns.forEach(b => {
+          const bVal = parseInt(b.dataset.val);
+          if (bVal <= val) {
+            b.classList.add('active');
+          } else {
+            b.classList.remove('active');
+          }
+        });
       });
     });
-  });
 
-  // Submit Review
-  document.getElementById('submitReviewBtn').addEventListener('click', () => {
-    const nameInput = document.getElementById('reviewName');
-    const serviceSelect = document.getElementById('reviewService');
-    const textInput = document.getElementById('reviewText');
-    const toast = document.getElementById('toast');
+    // Submit Review
+    document.getElementById('submitReviewBtn').addEventListener('click', () => {
+      const nameInput = document.getElementById('reviewName');
+      const serviceSelect = document.getElementById('reviewService');
+      const textInput = document.getElementById('reviewText');
+      const toast = document.getElementById('toast');
 
-    const nombreVal = nameInput.value.trim();
-    const serviceVal = serviceSelect.value;
-    const commentVal = textInput.value.trim();
+      const nombreVal = nameInput.value.trim();
+      const serviceVal = serviceSelect.value;
+      const commentVal = textInput.value.trim();
 
-    if (!nombreVal || !commentVal) {
-      toast.innerHTML = 'Por favor, ingresá tu nombre y comentario para publicar tu reseña.';
+      if (!nombreVal || !commentVal) {
+        toast.innerHTML = 'Por favor, ingresá tu nombre y comentario para publicar tu reseña.';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3200);
+        return;
+      }
+
+      // Add new review to data
+      REVIEWS_DATA.unshift({
+        nombre: nombreVal,
+        servicio: serviceVal,
+        rating: selectedRating,
+        quote: commentVal
+      });
+
+      // Reset form fields
+      nameInput.value = '';
+      textInput.value = '';
+      selectedRating = 5;
+      starBtns.forEach(b => b.classList.add('active')); // reset stars to 5
+
+      // Refresh display
+      renderReviews();
+      updateReviewStats();
+
+      // Success Toast
+      toast.innerHTML = '¡Gracias por dejar tu reseña! Se ha publicado correctamente.';
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 3200);
-      return;
-    }
-
-    // Add new review to data
-    REVIEWS_DATA.unshift({
-      nombre: nombreVal,
-      servicio: serviceVal,
-      rating: selectedRating,
-      quote: commentVal
     });
 
-    // Reset form fields
-    nameInput.value = '';
-    textInput.value = '';
-    selectedRating = 5;
-    starBtns.forEach(b => b.classList.add('active')); // reset stars to 5
-
-    // Refresh display
+    // Init reviews
     renderReviews();
     updateReviewStats();
+  </script>
 
-    // Success Toast
-    toast.innerHTML = '¡Gracias por dejar tu reseña! Se ha publicado correctamente.';
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3200);
-  });
-
-  // Init reviews
-  renderReviews();
-  updateReviewStats();
-</script>
+  <!-- Botón Flotante de WhatsApp -->
+  <a class="wa-btn" href="https://wa.me/542645611229" target="_blank" rel="noopener"
+    aria-label="Escribinos por WhatsApp">
+    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <title>WhatsApp</title>
+      <path
+        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+    </svg>
+  </a>
 
 </body>
+
 </html>

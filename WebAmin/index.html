@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quercia Studio Barber — Panel de Control</title>
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -115,16 +116,20 @@
       border-bottom: 1.5px dashed var(--line);
     }
 
-    .sidebar-brand .logo-pole {
-      width: 6px;
-      height: 32px;
-      border-radius: 4px;
-      background: repeating-linear-gradient(-45deg,
-          var(--burgundy) 0 8px,
-          var(--parchment) 8px 16px,
-          var(--brass) 16px 24px);
-      background-size: 100% 200%;
-      animation: pole-scroll 4s linear infinite;
+    .sidebar-brand .logo-img {
+      height: 42px;
+      width: 42px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 1.5px solid rgba(197, 160, 89, 0.45);
+      box-shadow: 0 0 10px rgba(197, 160, 89, 0.2);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-brand .logo-img:hover {
+      transform: scale(1.05) rotate(5deg);
+      border-color: var(--brass-bright);
+      box-shadow: 0 0 15px rgba(197, 160, 89, 0.55);
     }
 
     @keyframes pole-scroll {
@@ -603,8 +608,8 @@
     }
 
     input:-webkit-autofill,
-    input:-webkit-autofill:hover, 
-    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
     input:-webkit-autofill:active {
       -webkit-box-shadow: 0 0 0 30px rgba(10, 8, 6, 0.95) inset !important;
       -webkit-text-fill-color: var(--parchment) !important;
@@ -974,17 +979,20 @@
       margin-bottom: 24px;
     }
 
-    .auth-logo .pole {
-      width: 10px;
-      height: 48px;
-      border-radius: 6px;
-      background: repeating-linear-gradient(-45deg,
-          var(--burgundy) 0 10px,
-          var(--parchment) 10px 20px,
-          var(--brass) 20px 30px);
-      background-size: 100% 200%;
-      animation: pole-scroll 4s linear infinite;
-      box-shadow: 0 0 15px rgba(197, 160, 89, 0.25);
+    .auth-logo .logo-img {
+      height: 100px;
+      width: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid rgba(197, 160, 89, 0.5);
+      box-shadow: 0 0 25px rgba(197, 160, 89, 0.3);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .auth-logo .logo-img:hover {
+      transform: scale(1.03);
+      border-color: var(--brass-bright);
+      box-shadow: 0 0 35px rgba(197, 160, 89, 0.65);
     }
 
     .auth-card h2 {
@@ -1075,7 +1083,9 @@
 
     /* Responsive styling */
     @media (max-width: 960px) {
-      .dashboard-split, #ChatContainer {
+
+      .dashboard-split,
+      #ChatContainer {
         grid-template-columns: 1fr !important;
       }
     }
@@ -1521,6 +1531,7 @@
       border-radius: 12px 12px 4px 12px;
       align-self: flex-end;
     }
+
     .chat-bubble.user {
       background: rgba(45, 138, 107, 0.15);
       border: 1px solid rgba(45, 138, 107, 0.3);
@@ -1539,21 +1550,25 @@
   <div class="auth-overlay" id="authOverlay">
     <div class="auth-card">
       <div class="auth-logo">
-        <div class="pole"></div>
+        <img class="logo-img" src="logo.png" alt="Quercia Logo">
       </div>
       <h2>Quercia Staff</h2>
       <p class="mono" style="font-size:0.75rem; letter-spacing:0.1em; color:var(--brass-bright);">INGRESO ADMINISTRATIVO
       </p>
 
       <div class="form-group" style="margin-bottom:24px;">
-        <label for="pinInput" style="display:block; font-family:'Space Mono', monospace; font-size:0.75rem; letter-spacing:0.08em; color:var(--parchment-dim); margin-bottom:8px; text-transform:uppercase;">Contraseña de acceso</label>
+        <label for="pinInput"
+          style="display:block; font-family:'Space Mono', monospace; font-size:0.75rem; letter-spacing:0.08em; color:var(--parchment-dim); margin-bottom:8px; text-transform:uppercase;">Contraseña
+          de acceso</label>
         <div class="password-wrapper">
           <input type="text" id="pinInput" placeholder="Contraseña de acceso"
             style="text-align:center; font-family:'Space Mono', monospace; font-size:1.1rem; letter-spacing:0.15em; padding:14px 48px 14px 14px; width:100%;"
             autofocus>
-          <button type="button" id="btnTogglePin" class="btn-toggle-pass" title="Ocultar contraseña" aria-label="Ocultar contraseña">
+          <button type="button" id="btnTogglePin" class="btn-toggle-pass" title="Ocultar contraseña"
+            aria-label="Ocultar contraseña">
             <svg id="togglePinIcon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              <path
+                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
             </svg>
           </button>
         </div>
@@ -1562,7 +1577,7 @@
       <button type="button" class="btn-primary" style="width:100%; justify-content:center;" id="btnLoginSubmit">Acceder
         al panel</button>
       <p style="font-size: 0.78rem; color:var(--parchment-dim); margin-top:20px; text-decoration: underline;"><a
-          href="index.html">← Volver al sitio público</a></p>
+          href="/WebClientes/index.html">← Volver al sitio público</a></p> <!--CAMBIAR PARA PRODUCCION!!-->
     </div>
   </div>
 
@@ -1573,7 +1588,7 @@
     <aside class="sidebar">
       <div>
         <div class="sidebar-brand">
-          <div class="logo-pole"></div>
+          <img class="logo-img" src="logo.png" alt="Quercia Logo">
           <div class="brand-title">Quercia <span>Studio Barber Panel</span></div>
         </div>
         <nav class="nav-menu">
@@ -1646,7 +1661,9 @@
             </button>
           </div>
           <div class="header-actions">
-            <a href="index.html" target="_blank" class="btn-ghost">Ver sitio web público</a>
+            <a href="/WebClientes/index.html" target="_blank" class="btn-ghost">Ver sitio web público</a>
+            <!--CAMBIAR PARA PRODUCCION!!-->
+
             <button type="button" class="btn-primary" id="btnManualBookingDash">+ Nuevo Turno Manual</button>
           </div>
         </header>
@@ -1844,29 +1861,36 @@
 
       <!-- TAB 5: GESTIONAR AGENTE DE WHATSAPP -->
       <div class="tab-view" id="tab-whatsapp">
-        <header class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; gap: 20px; flex-wrap: wrap;">
+        <header class="panel-header"
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; gap: 20px; flex-wrap: wrap;">
           <div class="panel-title">
             <h1>Panel de Control del Bot</h1>
             <p>Conectá tu cuenta de WhatsApp y monitoreá la actividad del chatbot.</p>
           </div>
           <!-- Estado de la conexión en el extremo derecho -->
-          <div id="status-container-header" class="glass-panel" style="margin: 0; padding: 12px 24px; min-width: 250px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: rgba(23, 18, 14, 0.65); border: 1px solid var(--glass-border); border-radius: 8px;">
-            <span id="status-dot" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: var(--parchment-dim); filter: drop-shadow(0 0 4px var(--parchment-dim)); transition: all 0.3s ease;"></span>
-            <p id="connection-status-text" style="font-family:'Space Mono', monospace; font-size: 0.85rem; color: var(--parchment-dim); margin: 0; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em;">
+          <div id="status-container-header" class="glass-panel"
+            style="margin: 0; padding: 12px 24px; min-width: 250px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: rgba(23, 18, 14, 0.65); border: 1px solid var(--glass-border); border-radius: 8px;">
+            <span id="status-dot"
+              style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: var(--parchment-dim); filter: drop-shadow(0 0 4px var(--parchment-dim)); transition: all 0.3s ease;"></span>
+            <p id="connection-status-text"
+              style="font-family:'Space Mono', monospace; font-size: 0.85rem; color: var(--parchment-dim); margin: 0; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em;">
               Conectando...
             </p>
           </div>
         </header>
 
         <!-- Contenedor QR -->
-        <div id="QR" class="glass-panel" style="max-width: 860px; margin: 0 auto 30px auto; padding: 0; overflow: hidden; background: rgba(23, 18, 14, 0.7); border: 1px solid var(--glass-border); border-radius: 16px;">
+        <div id="QR" class="glass-panel"
+          style="max-width: 860px; margin: 0 auto 30px auto; padding: 0; overflow: hidden; background: rgba(23, 18, 14, 0.7); border: 1px solid var(--glass-border); border-radius: 16px;">
           <div class="qr-grid-layout">
             <!-- Columna Izquierda: Instrucciones paso a paso -->
             <div class="qr-instructions-col">
               <h3 class="qr-title">Vincular WhatsApp</h3>
               <ol class="qr-steps-list">
                 <li>Abre <strong style="color: var(--parchment);">WhatsApp</strong> en tu teléfono celular.</li>
-                <li>Toca el ícono de <strong style="color: var(--parchment);">Menú</strong> o <strong style="color: var(--parchment);">Ajustes</strong> y selecciona <strong style="color: var(--parchment);">Dispositivos vinculados</strong>.</li>
+                <li>Toca el ícono de <strong style="color: var(--parchment);">Menú</strong> o <strong
+                    style="color: var(--parchment);">Ajustes</strong> y selecciona <strong
+                    style="color: var(--parchment);">Dispositivos vinculados</strong>.</li>
                 <li>Toca el botón <strong style="color: var(--parchment);">Vincular un dispositivo</strong>.</li>
                 <li>Apunta la cámara de tu teléfono hacia esta pantalla para escanear el código QR.</li>
               </ol>
@@ -1880,11 +1904,15 @@
         </div>
 
         <!-- Contenedor de Chat y Control en Split View -->
-        <div id="ChatContainer" class="dashboard-split" style="display: none; gap: 30px; max-width: 1200px; margin: 0 auto 30px auto;">
+        <div id="ChatContainer" class="dashboard-split"
+          style="display: none; gap: 30px; max-width: 1200px; margin: 0 auto 30px auto;">
           <!-- Lado Izquierdo: Chat History -->
-          <div class="glass-panel" style="background: rgba(23, 18, 14, 0.65); padding: 24px; display: flex; flex-direction: column; height: 100%;">
-            <h3 style="font-family:'Fraunces', serif; color: var(--brass-bright); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
-              <span style="display: inline-block; width: 10px; height: 10px; background-color: #4ade80; border-radius: 50%; box-shadow: 0 0 10px #4ade80;"></span>
+          <div class="glass-panel"
+            style="background: rgba(23, 18, 14, 0.65); padding: 24px; display: flex; flex-direction: column; height: 100%;">
+            <h3
+              style="font-family:'Fraunces', serif; color: var(--brass-bright); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
+              <span
+                style="display: inline-block; width: 10px; height: 10px; background-color: #4ade80; border-radius: 50%; box-shadow: 0 0 10px #4ade80;"></span>
               Historial de Chat del Bot
             </h3>
 
@@ -1895,26 +1923,38 @@
 
             <!-- Buscador por número de cliente -->
             <div id="chat-filter-container" style="margin-bottom: 16px;">
-              <input type="text" id="chat-filter-input" placeholder="Filtrar por número de celular (ej: 549...)" style="width: 100%; font-family: 'Space Mono', monospace; font-size: 0.85rem; padding: 10px 14px; background: rgba(10, 8, 6, 0.6); color: var(--parchment); border: 1px solid var(--glass-border); border-radius: 6px; outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='var(--brass-bright)'" onblur="this.style.borderColor='var(--glass-border)'">
+              <input type="text" id="chat-filter-input" placeholder="Filtrar por número de celular (ej: 549...)"
+                style="width: 100%; font-family: 'Space Mono', monospace; font-size: 0.85rem; padding: 10px 14px; background: rgba(10, 8, 6, 0.6); color: var(--parchment); border: 1px solid var(--glass-border); border-radius: 6px; outline: none; transition: border-color 0.2s ease;"
+                onfocus="this.style.borderColor='var(--brass-bright)'"
+                onblur="this.style.borderColor='var(--glass-border)'">
             </div>
 
             <div id="Historial_Chat">
               <!-- Burbujas de chat cargadas dinámicamente -->
             </div>
-            <button type="button" id="terminar" class="btn-logout" style="width: 100%; border: 1px solid #e63946; color: #e63946; padding: 14px 20px; justify-content: center; font-weight: bold; margin-top: auto;">
+            <button type="button" id="terminar" class="btn-logout"
+              style="width: 100%; border: 1px solid #e63946; color: #e63946; padding: 14px 20px; justify-content: center; font-weight: bold; margin-top: auto;">
               Terminar sesión por IA
             </button>
           </div>
 
           <!-- Lado Derecho: Restricciones (Prompt) -->
-          <div class="glass-panel" style="background: rgba(23, 18, 14, 0.65); padding: 24px; display: flex; flex-direction: column; height: 100%;">
-            <h3 style="font-family:'Fraunces', serif; color: var(--brass-bright); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
-              <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: currentColor;"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          <div class="glass-panel"
+            style="background: rgba(23, 18, 14, 0.65); padding: 24px; display: flex; flex-direction: column; height: 100%;">
+            <h3
+              style="font-family:'Fraunces', serif; color: var(--brass-bright); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
+              <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: currentColor;">
+                <path
+                  d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+              </svg>
               Reglas y Restricciones de la IA
             </h3>
             <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 14px; height: 100%;">
-              <textarea id="prompt-rules-content" style="font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--parchment); background: rgba(10, 8, 6, 0.45); border: 1px solid var(--glass-border); border-radius: 12px; padding: 16px; height: 380px; resize: none; width: 100%; outline: none;" placeholder="Cargando reglas y restricciones..."></textarea>
-              <button type="button" id="btnSaveRules" class="btn-primary" style="width: 100%; justify-content: center; font-weight: bold; margin-top: auto;">
+              <textarea id="prompt-rules-content"
+                style="font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--parchment); background: rgba(10, 8, 6, 0.45); border: 1px solid var(--glass-border); border-radius: 12px; padding: 16px; height: 380px; resize: none; width: 100%; outline: none;"
+                placeholder="Cargando reglas y restricciones..."></textarea>
+              <button type="button" id="btnSaveRules" class="btn-primary"
+                style="width: 100%; justify-content: center; font-weight: bold; margin-top: auto;">
                 Guardar Restricciones de IA
               </button>
             </div>
@@ -3036,7 +3076,7 @@
     const renderizarHistorialFiltrado = () => {
       if (!historialdmsgs) return;
       historialdmsgs.innerHTML = '';
-      
+
       let filtered = [];
 
       if (activeChatTab === 'all') {
@@ -3058,7 +3098,7 @@
       filtered.forEach(msg => {
         const bubble = document.createElement('div');
         bubble.classList.add('chat-bubble');
-        
+
         if (msg.sender === 'bot') {
           bubble.classList.add('bot');
           bubble.innerHTML = `<span style="font-size: 0.7rem; color: var(--brass-bright); display: block; margin-bottom: 4px;">Bot a [${msg.numero}]</span>${msg.texto}`;
@@ -3066,7 +3106,7 @@
           bubble.classList.add('user');
           bubble.innerHTML = `<span style="font-size: 0.7rem; color: var(--parchment-dim); display: block; margin-bottom: 4px;">[${msg.numero}]</span>${msg.texto}`;
         }
-        
+
         historialdmsgs.appendChild(bubble);
       });
       historialdmsgs.scrollTop = historialdmsgs.scrollHeight;
@@ -3117,7 +3157,7 @@
       });
 
       socket.on('connect_error', () => {
-        updateStatus("Error de conexión", "#f87171", "#f87171", "#f87171");
+        updateStatus("Desconectado", "#f87171", "#f87171", "#f87171");
         if (divQR) divQR.style.display = 'none';
         if (chatContainer) chatContainer.style.display = 'none';
       });
