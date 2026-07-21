@@ -5,6 +5,8 @@ const qr_consola = require('qrcode-terminal');
 const fs = require('fs');
 const path = require('path');
 const api_key_ia = process.env.api_key_chtbot; //esto para local nada mas
+const { GoogleGenAI } = require("@google/genai");
+const ai = new GoogleGenAI({ apiKey: api_key_ia });
 
 // Cargar reglas iniciales desde el archivo de texto plano para evitar reinicios por watch mode
 const rulesPath = path.join(__dirname, 'Reglas_resp_Modelo.txt');
@@ -246,41 +248,19 @@ async function GenerarResp_IA(mensaje_Actu, Historial) {
     Responde de manera respetuosa y humana`;
     // realizar la peticion
     try {
-        const respuesta = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${api_key_ia}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                "model": "openrouter/free",
-                "messages": [
-                    {
-                        "role": "system",
-                        "content": Restriccion
-                    },
-                    {
-                        "role": "user",
-                        "content": mensaje_Actu.body
-                    }
-                ]
-            })
+        const interaction = await ai.interactions.create({
+            model: "gemini-3.5-flash-lite",
+            input: mensaje_Actu.body,
+            system_instruction: Restriccion
         });
-        const data = await respuesta.json();
 
-        // Log errors from OpenRouter API
-        if (data.error) {
-            console.error("OpenRouter API error:", data.error);
-            return "Disculpá, tuve un inconveniente técnico al procesar el mensaje.";
-        }
+        const content = interaction.output_text;
 
-        // Verify choices presence
-        if (!data.choices || data.choices.length === 0 || !data.choices[0].message) {
-            console.error("OpenRouter returned empty choices list:", data);
+        // Verify content presence
+        if (!content) {
+            console.error("Gemini returned empty output_text:", interaction);
             return "Disculpá, no pude obtener respuesta de la IA en este momento.";
         }
-
-        const content = data.choices[0].message.content;
 
         // Devolvemos el texto generado por la IA
         if (content == 'User Safety: safe') {
@@ -290,7 +270,7 @@ async function GenerarResp_IA(mensaje_Actu, Historial) {
             return content;
         }
     } catch (error) {
-        console.error("Error al consultar OpenRouter:", error);
+        console.error("Error al consultar Gemini AI:", error);
         return "Disculpá, tuve un problema al procesar tu mensaje.";
     }
 }

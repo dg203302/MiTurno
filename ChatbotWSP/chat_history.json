@@ -10,5 +10,77 @@
     "numero": "115715092779249",
     "texto": "Disculpá, tuve un inconveniente técnico al procesar el mensaje.",
     "timestamp": 1784614034041
+  },
+  {
+    "sender": "cliente",
+    "numero": "115715092779249",
+    "texto": "Hola perrito",
+    "timestamp": 1784645442882
+  },
+  {
+    "sender": "bot",
+    "numero": "115715092779249",
+    "texto": "Disculpá, tuve un problema al procesar tu mensaje.",
+    "timestamp": 1784645543095
+  },
+  {
+    "sender": "cliente",
+    "numero": "115715092779249",
+    "texto": "Hola, cómo va?",
+    "timestamp": 1784645860376
+  },
+  {
+    "sender": "bot",
+    "numero": "115715092779249",
+    "texto": "Disculpá, tuve un problema al procesar tu mensaje.",
+    "timestamp": 1784645864675
+  },
+  {
+    "sender": "cliente",
+    "numero": "115715092779249",
+    "texto": "hola buena",
+    "timestamp": 1784645924029
+  },
+  {
+    "sender": "bot",
+    "numero": "115715092779249",
+    "texto": "Disculpá, tuve un problema al procesar tu mensaje.",
+    "timestamp": 1784645927557
+  },
+  {
+    "sender": "cliente",
+    "numero": "115715092779249",
+    "texto": "dsadasda",
+    "timestamp": 1784646161184
+  },
+  {
+    "sender": "bot",
+    "numero": "115715092779249",
+    "texto": "¡Hola! ¿En qué puedo ayudarte hoy? Si tenés alguna consulta sobre nuestros servicios, horarios o ubicación, decime y te cuento con gusto.",
+    "timestamp": 1784646169963
+  },
+  {
+    "sender": "cliente",
+    "numero": "115715092779249",
+    "texto": "quieor un cortesitooo",
+    "timestamp": 1784646180040
+  },
+  {
+    "sender": "bot",
+    "numero": "115715092779249",
+    "texto": "¡Claro que sí! Con gusto te ayudo a agendarlo. \n\nPara comenzar con tu reserva, ¿qué día te gustaría venir y con qué profesional preferís atenderte, o te da igual?",
+    "timestamp": 1784646189438
+  },
+  {
+    "sender": "cliente",
+    "numero": "115715092779249",
+    "texto": "me chupoa un huevooo",
+    "timestamp": 1784646293160
+  },
+  {
+    "sender": "bot",
+    "numero": "115715092779249",
+    "texto": "Entiendo. Si en algún momento cambias de opinión o necesitás algo, avisame. ¡Que tengas buen día!",
+    "timestamp": 1784646299405
   }
 ]
