@@ -84,9 +84,8 @@ function iniciarWSP() {
             client_id: "Bot_Pruebas_Local",
             dataPath: "/home/diego/.wwebjs_auth_data"
         }),
-        webVersionCache: {
-            type: 'remote',
-            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
+        puppeteer: {
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
         }
     });
 
